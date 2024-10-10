@@ -3,6 +3,7 @@
 
 namespace plugin\eagleadmin\app\middleware;
 
+use plugin\eagleadmin\app\model\EgLog;
 use plugin\eagleadmin\app\model\EmsLog;
 use Tinywan\Jwt\JwtToken;
 use Webman\Http\Request;
@@ -91,7 +92,7 @@ class LogMiddleware implements MiddlewareInterface
         }
 
         //记录后台操作日志
-        EmsLog::insert($logInfo);
+        EgLog::insert($logInfo);
         return $response;
     }
 }

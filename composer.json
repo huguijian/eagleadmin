@@ -4,6 +4,9 @@
   "license": "MIT",
   "description": "Webman plugin huguijian/eagleadmin",
   "require": {
+    "illuminate/database": "^9.52",
+    "illuminate/pagination": "^9.0.0",
+    "illuminate/events": "^9.0.0"
   },
   "autoload": {
     "psr-4": {
