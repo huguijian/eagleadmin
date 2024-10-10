@@ -1,5 +1,5 @@
 <?php
-namespace app\api;
+namespace plugin\eagleadmin\api;
 
 
 use plugin\eagleadmin\app\model\EgRole;

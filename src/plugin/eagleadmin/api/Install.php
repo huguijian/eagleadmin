@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\admin\api;
+namespace plugin\eagleadmin\api;
 
 class Install
 {

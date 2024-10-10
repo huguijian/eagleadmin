@@ -1,5 +1,5 @@
 <?php
-namespace plugin\admin\api;
+namespace plugin\eagleadmin\api;
 
 use plugin\admin\app\model\Role;
 use plugin\admin\app\model\Rule;
