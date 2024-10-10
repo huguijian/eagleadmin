@@ -1,6 +1,6 @@
 <?php
 return [
     'files' => [
-        base_path() . '/plugin/ems/app/functions.php',
+        base_path() . '/plugin/eagleadmin/app/functions.php',
     ]
 ];
