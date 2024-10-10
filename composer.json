@@ -6,7 +6,10 @@
   "require": {
     "illuminate/database": "^9.52",
     "illuminate/pagination": "^9.0.0",
-    "illuminate/events": "^9.0.0"
+    "illuminate/events": "^9.0.0",
+    "symfony/var-dumper": "^6.2",
+    "gregwar/captcha": "^1.2",
+    "illuminate/redis": "^10.48"
   },
   "autoload": {
     "psr-4": {
