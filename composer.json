@@ -1,8 +1,8 @@
 {
-  "name": "eagle/eagleadmin",
+  "name": "huguijian/eagleadmin",
   "type": "library",
   "license": "MIT",
-  "description": "Webman plugin eagle/eagleadmin",
+  "description": "Webman plugin huguijian/eagleadmin",
   "require": {
   },
   "autoload": {
