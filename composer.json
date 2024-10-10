@@ -1,0 +1,13 @@
+{
+  "name": "eagle/admin",
+  "type": "library",
+  "license": "MIT",
+  "description": "Webman plugin eagle/admin",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Eagle\\Admin\\": "src"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+<?php
+
+namespace plugin\eagleadmin\app\admin\logic;
+
+use plugin\eagleadmin\app\model\EmsNotice;
+use plugin\eagleadmin\app\model\EmsUser;
+use support\Redis;
+use Tinywan\Jwt\JwtToken;
+
+class AdminLogic
+{
+    public static function login($params,&$data,&$code,&$msg): bool
+    {
+        $username  = $params["username"]??"";
+        $password  = $params["password"]??"";
+        $captcha   = $params["captcha"]??"";
+        $captchaId   = $params["captcha_id"]??"";
+        //模型打印sql语句
+        //Db::connection()->enableQueryLog();
+        $userInfo = EmsUser::with('department')->where('user_name', $username)->first();
+        //var_dump(Db::getQueryLog());
+        if (empty($userInfo)) {
+            $code = -1;
+            $msg  = "用户不存在!";
+            return false;
+        }
+
+        if (!password_verify($password, $userInfo["password"])) {
+            $code = -1;
+            $msg  = "用户名或密码错误!";
+            return false;
+        }
+
+        if ($userInfo["is_audit"] != 1) {
+            $code = -1;
+            $msg  = "该用户待审核!";
+            return false;
+        }
+
+        if ($userInfo["status"] != 1) {
+            $code = -1;
+            $msg  = "该用户禁止登陆!";
+            return false;
+        }
+
+        if (getenv('APP_ENV')!=='local') {
+            $redisCaptcha = Redis::get("ems:captcha:code:".$captchaId);
+
+            if (empty($redisCaptcha)) {
+                $code = -1;
+                $msg = '验证码错误';
+                return false;
+            }
+            if (strtolower($redisCaptcha)!=strtolower($captcha)) {
+                $code = -1;
+                $msg = '验证码错误或已失效!';
+                // 删除缓存
+                Redis::del("ems:captcha:code:".$captchaId);
+                return false;
+            }
+        }
+
+        //        $tmp = Redis::get("captcha:code:".$captchaId);
+        //        if (strtolower($verifyCode)!=strtolower($tmp)) {
+        //            throw new BusinessException("验证码错误",[],500);
+        //        }
+        $token = JwtToken::generateToken([
+            'id' => $userInfo['id'],
+            "avatar" => $userInfo["avatar"],
+            "phone" => $userInfo["phone"],
+            "org_id" => $userInfo["org_id"]
+        ]);
+        $departmentName = $userInfo['department']['name'] ?? '';
+
+
+        $data = [
+            "token" => $token["access_token"],
+            "expires_in" =>$token['expires_in'],
+            "avatar" => $userInfo["avatar"],
+            "id" => $userInfo["id"],
+            "lastlogintime" => "",
+            "nickname" => $userInfo["nick_name"],
+            "refresh_token" => $token["refresh_token"],
+            "username" => $userInfo["user_name"],
+            "department_id" => $userInfo['department_id'],
+            "department_name" => $departmentName,
+        ];
+        return true;
+    }
+
+
+    /**
+     * 获取角色树形菜单
+     * @param $data
+     * @param $pid
+     * @param $level
+     * @return array
+     */
+    public static function getTreeRole($data, $pid = 0, $level = 0)
+    {
+        $newArr = [];
+        foreach ($data as $item) {
+            if ($item["pid"] == $pid) {
+                $item["children"] = self::getTreeMenuNormal($data, $item["id"], $level + 1);
+                $newArr[] = $item;
+            }
+        }
+
+        return $newArr;
+    }
+
+    /**
+     * 递归树形菜单
+     * @param $data
+     * @param int $pid
+     * @param int $level
+     * @return array
+     */
+    public static function getTreeMenuNormal($data, $pid = 0, $level = 0)
+    {
+        $newArr = [];
+        foreach ($data as $item) {
+            if ($item["pid"] == $pid) {
+                $item["children"] = self::getTreeMenuNormal($data, $item["id"], $level + 1);
+                $newArr[] = $item;
+            }
+        }
+
+        return $newArr;
+    }
+}
