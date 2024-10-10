@@ -13,14 +13,14 @@ namespace plugin\eagleadmin\app\model;
  * @property mixed $create_time 创建时间
  * @property mixed $update_time 更新时间
  */
-class EmsDictCategory extends Base
+class EgDictCategory extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_dict_category';
+    protected $table = 'eg_dict_category';
 
     /**
      * The primary key associated with the table.

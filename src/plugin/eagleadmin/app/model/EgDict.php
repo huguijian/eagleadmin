@@ -15,14 +15,14 @@ namespace plugin\eagleadmin\app\model;
  * @property integer $sort 排序
  * @property integer $status 状态1激活 0禁用
  */
-class EmsDict extends Base
+class EgDict extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_dict';
+    protected $table = 'eg_dict';
 
     /**
      * The primary key associated with the table.

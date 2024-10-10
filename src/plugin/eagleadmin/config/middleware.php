@@ -9,9 +9,6 @@ return [
     ],
     //应用中间件(应用中间件仅在多应用模式下有效)
     'admin' => [
-        plugin\eagleadmin\app\middleware\AdminMiddleware::class,
+        plugin\eagleadmin\api\Middleware::class,
     ],
-    'home' => [
-        plugin\eagleadmin\app\middleware\HomeMiddleware::class,
-    ]
 ];

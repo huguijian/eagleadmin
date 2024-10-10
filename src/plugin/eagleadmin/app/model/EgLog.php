@@ -2,20 +2,23 @@
 
 namespace plugin\eagleadmin\app\model;
 
-class EmsUserRegister extends Base
+class EgLog extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_user_register';
+    protected $table = 'eg_log';
 
 
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';
 
-    protected $guarded = [];
+    public function userInfo()
+    {
+        return $this->hasOne(EgUser::class,'id','user_id');
+    }
 
 }

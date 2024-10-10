@@ -1,8 +1,6 @@
 <?php
 
-namespace plugin\eagleadmin\api;
-
-use plugin\admin\api\Menu;
+namespace plugin\admin\api;
 
 class Install
 {
@@ -15,9 +13,7 @@ class Install
     public static function install($version)
     {
         // 导入菜单
-        if($menus = static::getMenus()) {
-            Menu::import($menus);
-        }
+        Menu::import(static::getMenus());
     }
 
     /**
@@ -30,7 +26,7 @@ class Install
     {
         // 删除菜单
         foreach (static::getMenus() as $menu) {
-            Menu::delete($menu['key']);
+            Menu::delete($menu['name']);
         }
     }
 
@@ -49,9 +45,7 @@ class Install
             static::removeUnnecessaryMenus($context['previous_menus']);
         }
         // 导入新菜单
-        if ($menus = static::getMenus()) {
-            Menu::import($menus);
-        }
+        Menu::import(static::getMenus());
     }
 
     /**

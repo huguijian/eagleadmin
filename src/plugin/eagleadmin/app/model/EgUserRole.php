@@ -7,14 +7,14 @@ namespace plugin\eagleadmin\app\model;
  * @property int $user_id
  * @property int $role_id
  */
-class EmsUserRole extends Base
+class EgUserRole extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_user_role';
+    protected $table = 'eg_user_role';
 
 
     /**

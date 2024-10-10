@@ -3,7 +3,7 @@
 namespace plugin\eagleadmin\app\model;
 use jwt\JwtInstance;
 
-class EmsAttachment extends Base
+class EgAttachment extends Base
 {
 
     /**
@@ -11,7 +11,7 @@ class EmsAttachment extends Base
      *
      * @var string
      */
-    protected $table = 'ems_attachment';
+    protected $table = 'eg_attachment';
 
     /**
      * The primary key associated with the table.

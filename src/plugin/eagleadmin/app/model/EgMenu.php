@@ -2,14 +2,24 @@
 
 namespace plugin\eagleadmin\app\model;
 
-class EmsChangeAssets extends Base
+/**
+ * @property int $menu_id
+ * @property int $parent_id
+ * @property string $name
+ * @property string $url
+ * @property string $perms
+ * @property int $type
+ * @property string $icon
+ * @property int $order_num
+ */
+class EgMenu extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_change_assets';
+    protected $table = 'eg_menu';
 
     /**
      * The attributes that should be cast to native types.
@@ -21,10 +31,4 @@ class EmsChangeAssets extends Base
 
     const UPDATED_AT = 'update_time';
 
-    protected $guarded = [];
-
-    public function deviceInfo()
-    {
-        return $this->hasOne(EmsDevice::class,'id', 'device_id');
-    }
 }

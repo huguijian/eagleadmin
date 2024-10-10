@@ -2,14 +2,14 @@
 
 namespace plugin\eagleadmin\app\model;
 
-class EmsDistrict extends Base
+class EgConfig extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_district';
+    protected $table = 'eg_config';
 
     /**
      * The attributes that should be cast to native types.
@@ -17,8 +17,9 @@ class EmsDistrict extends Base
      * @var array
      */
 
-    const CREATED_AT = 'created_at';
+    const CREATED_AT = 'create_time';
 
-    const UPDATED_AT = 'updated_at';
+    const UPDATED_AT = 'update_time';
 
+    protected $guarded = [];
 }

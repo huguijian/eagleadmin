@@ -2,14 +2,14 @@
 
 namespace plugin\eagleadmin\app\model;
 
-class EmsDepartmentHead extends Base
+class EgDepartmentHead extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_department_head';
+    protected $table = 'eg_department_head';
 
     const CREATED_AT = 'create_at';
 

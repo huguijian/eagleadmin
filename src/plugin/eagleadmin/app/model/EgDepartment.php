@@ -3,14 +3,14 @@
 namespace plugin\eagleadmin\app\model;
 
 
-class EmsDepartment extends Base
+class EgDepartment extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_department';
+    protected $table = 'eg_department';
 
     protected $fillable = [
         'name',
@@ -27,7 +27,7 @@ class EmsDepartment extends Base
     public function head()
     {
         return $this->belongsToMany(
-            EmsUser::class,
+            EgUser::class,
             'ems_department_head',
             'department_id',
             'head_id',

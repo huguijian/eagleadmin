@@ -2,15 +2,15 @@
 
 namespace plugin\eagleadmin\app\model;
 
-class EmsUserSubjectMap extends Base
+
+class EgRoleDepartment extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_user_subject_map';
-
+    protected $table = 'eg_role_department';
 
     const CREATED_AT = 'create_time';
 

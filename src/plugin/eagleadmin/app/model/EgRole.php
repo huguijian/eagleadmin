@@ -8,14 +8,14 @@ namespace plugin\eagleadmin\app\model;
  * @property int $create_user_id
  * @property string $create_time
  */
-class EmsRole extends Base
+class EgRole extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'ems_role';
+    protected $table = 'eg_role';
 
     /**
      * The attributes that should be cast to native types.
