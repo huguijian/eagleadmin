@@ -98,7 +98,7 @@ class AdminController extends BaseController
         // 生成验证码
         $builder->build();
         $captchaId = uniqid();
-        Redis::set("ems:captcha:code:".$captchaId, $builder->getPhrase(),'EX',300);
+        Redis::set("eagleadmin:captcha:code:".$captchaId, $builder->getPhrase(),'EX',300);
         // 输出验证码二进制数据
         return $this->success(["base64"=>$builder->inline(),"key"=>$captchaId]);
     }

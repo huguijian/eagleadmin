@@ -9,7 +9,9 @@
     "illuminate/events": "^9.0.0",
     "symfony/var-dumper": "^6.2",
     "gregwar/captcha": "^1.2",
-    "illuminate/redis": "^10.48"
+    "illuminate/redis": "^10.48",
+    "topthink/think-validate": "^2.0",
+    "tinywan/jwt": "^1.6"
   },
   "autoload": {
     "psr-4": {

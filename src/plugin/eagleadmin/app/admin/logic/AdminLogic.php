@@ -2,8 +2,7 @@
 
 namespace plugin\eagleadmin\app\admin\logic;
 
-use plugin\eagleadmin\app\model\EmsNotice;
-use plugin\eagleadmin\app\model\EmsUser;
+use plugin\eagleadmin\app\model\EgUser;
 use support\Redis;
 use Tinywan\Jwt\JwtToken;
 
@@ -13,11 +12,11 @@ class AdminLogic
     {
         $username  = $params["username"]??"";
         $password  = $params["password"]??"";
-        $captcha   = $params["captcha"]??"";
+        $captcha   = $params["code"]??"";
         $captchaId   = $params["captcha_id"]??"";
         //模型打印sql语句
         //Db::connection()->enableQueryLog();
-        $userInfo = EmsUser::with('department')->where('user_name', $username)->first();
+        $userInfo = EgUser::with('department')->where('user_name', $username)->first();
         //var_dump(Db::getQueryLog());
         if (empty($userInfo)) {
             $code = -1;
@@ -31,12 +30,6 @@ class AdminLogic
             return false;
         }
 
-        if ($userInfo["is_audit"] != 1) {
-            $code = -1;
-            $msg  = "该用户待审核!";
-            return false;
-        }
-
         if ($userInfo["status"] != 1) {
             $code = -1;
             $msg  = "该用户禁止登陆!";
@@ -44,7 +37,7 @@ class AdminLogic
         }
 
         if (getenv('APP_ENV')!=='local') {
-            $redisCaptcha = Redis::get("ems:captcha:code:".$captchaId);
+            $redisCaptcha = Redis::get("eagleadmin:captcha:code:".$captchaId);
 
             if (empty($redisCaptcha)) {
                 $code = -1;
@@ -55,7 +48,7 @@ class AdminLogic
                 $code = -1;
                 $msg = '验证码错误或已失效!';
                 // 删除缓存
-                Redis::del("ems:captcha:code:".$captchaId);
+                Redis::del("eagleadmin:captcha:code:".$captchaId);
                 return false;
             }
         }
