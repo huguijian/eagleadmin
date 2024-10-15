@@ -4,6 +4,9 @@ namespace plugin\eagleadmin\app\admin\logic\auth;
 
 use app\model\SsyDeviceAuditGroup;
 use app\model\SsyUserCreditScoreLog;
+use plugin\eagleadmin\app\model\EgDepartment;
+use plugin\eagleadmin\app\model\EgRole;
+use plugin\eagleadmin\app\model\EgUser;
 use plugin\eagleadmin\app\model\EmsDepartment;
 use plugin\eagleadmin\app\model\EmsDeviceAuditGroup;
 use plugin\eagleadmin\app\model\EmsDeviceGroupUserMap;
@@ -163,11 +166,11 @@ class UserLogic
     public static function getUserInfo(string $userId = "",&$msg=''): bool|array
     {
         try {
-            $userInfo = EmsUser::where('id', $userId)->first();
+            $userInfo = EgUser::where('id', $userId)->first();
             if (!empty($userInfo)) {
-                $departmentNameModel = EmsDepartment::query()->where('id', $userInfo["department_id"])->first();
-                $role_ids = Db::table('ems_user_role')->where("user_id", $userId)->pluck('role_id');
-                $roleName = EmsRole::whereIn("id", $role_ids)->pluck("name", "id");
+                $departmentNameModel = EgDepartment::query()->where('id', $userInfo["department_id"])->first();
+                $role_ids = Db::table('eg_user_role')->where("user_id", $userId)->pluck('role_id');
+                $roleName = EgRole::whereIn("id", $role_ids)->pluck("name", "id");
                 $roleName = array_values(collect($roleName)->toArray());
                 $userInfo["roleIdList"] = $role_ids;
                 $userInfo["role_id"]    = collect($role_ids)->toArray();

@@ -9,7 +9,7 @@ Route::group('/core', function () {
 //
 //    Route::get("/system/dictData",[plugin\saiadmin\app\controller\SystemController::class, 'dictData']);
 //    Route::get("/system/dictAll",[plugin\saiadmin\app\controller\SystemController::class, 'dictAll']);
-    Route::get('/system/user', [plugin\saiadmin\app\controller\SystemController::class, 'userInfo']);
+    Route::get('/system/user', [plugin\eagleadmin\app\admin\controller\auth\UserController::class, 'userInfo']);
 //    Route::get('/system/clearAllCache', [plugin\saiadmin\app\controller\SystemController::class, 'clearAllCache']);
 //
 //    Route::get("/system/getResourceList",[plugin\saiadmin\app\controller\SystemController::class, 'getResourceList']);
@@ -92,4 +92,4 @@ Route::group('/tool', function () {
 //    Route::post("/code/sync/{id}",[\plugin\saiadmin\app\controller\tool\GenerateTablesController::class, 'sync']);
 });
 
-Route::disableDefaultRoute('eagleadmin');
+//Route::disableDefaultRoute('eagleadmin');

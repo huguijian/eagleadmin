@@ -7,6 +7,7 @@ use app\model\SsyUserCreditScoreLog;
 use plugin\eagleadmin\app\admin\logic\auth\UserLogic;
 use plugin\eagleadmin\app\admin\validate\auth\UserValidate;
 use plugin\eagleadmin\app\BaseController;
+use plugin\eagleadmin\app\model\EgUser;
 use plugin\eagleadmin\app\model\EmsDepartment;
 use plugin\eagleadmin\app\model\EmsDeviceAuditGroup;
 use plugin\eagleadmin\app\model\EmsDeviceGroup;
@@ -28,7 +29,7 @@ use Tinywan\Jwt\JwtToken;
 class UserController extends BaseController
 {
 
-    protected array $noNeedAuth = ['getRole','getUserInfo'];
+    protected array $noNeedAuth = ['getRole','userInfo'];
 
     protected $model = null;
 
@@ -38,7 +39,7 @@ class UserController extends BaseController
 
     public function __construct()
     {
-        $this->model = new EmsUser();
+        $this->model = new EgUser();
     }
 
     public function select(Request $request): Response
@@ -179,7 +180,7 @@ class UserController extends BaseController
      * @return \support\Response
      * @throws \Exception
      */
-    public function getUserInfo(Request $request): \support\Response
+    public function userInfo(Request $request): \support\Response
     {
         $userId = JwtToken::getCurrentId();
         $result = UserLogic::getUserInfo($userId,$msg);

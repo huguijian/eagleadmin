@@ -48,14 +48,12 @@ class LogMiddleware implements MiddlewareInterface
         $input = json_encode($request->all(),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
         $output = json_encode($output,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
         $authorization = $request->header('authorization');
+        $userId = 0;
         if (!$authorization) {
-            $userId = 0;
             if ($request->action=='login') {
                 $body = json_decode($response->rawBody(),true);
                 $userId = $body['data']['userInfo']['id']??0;
             }
-        } else {
-            $userId = getUid();
         }
 
 

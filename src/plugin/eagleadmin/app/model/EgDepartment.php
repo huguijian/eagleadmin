@@ -28,7 +28,7 @@ class EgDepartment extends Base
     {
         return $this->belongsToMany(
             EgUser::class,
-            'ems_department_head',
+            'eg_department_head',
             'department_id',
             'head_id',
         );
