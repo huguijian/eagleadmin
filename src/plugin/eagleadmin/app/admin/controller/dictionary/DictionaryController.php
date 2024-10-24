@@ -27,4 +27,10 @@ class DictionaryController extends BaseController
         $list = EmsDict::where('dict_code',$params['dict_code'])->get();
         return $this->success($list);
     }
+
+
+    public function dictAll(Request $request)
+    {
+
+    }
 }

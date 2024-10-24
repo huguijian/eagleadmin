@@ -8,7 +8,7 @@ Route::group('/core', function () {
     Route::post('/login', [plugin\eagleadmin\app\admin\controller\AdminController::class, 'login']);
 //
 //    Route::get("/system/dictData",[plugin\saiadmin\app\controller\SystemController::class, 'dictData']);
-//    Route::get("/system/dictAll",[plugin\saiadmin\app\controller\SystemController::class, 'dictAll']);
+    Route::get("/system/dictAll",[plugin\eagleadmin\app\admin\controller\dictionary\DictionaryController::class, 'dictAll']);
     Route::get('/system/user', [plugin\eagleadmin\app\admin\controller\auth\UserController::class, 'userInfo']);
 //    Route::get('/system/clearAllCache', [plugin\saiadmin\app\controller\SystemController::class, 'clearAllCache']);
 //

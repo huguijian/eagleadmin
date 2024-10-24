@@ -3,6 +3,7 @@
 namespace plugin\eagleadmin\app\service;
 
 use CURLFile;
+use plugin\eagleadmin\app\model\EgAttachment;
 use plugin\eagleadmin\app\model\EmsAttachment;
 use Shopwwi\WebmanFilesystem\FilesystemFactory;
 use support\Log;
@@ -18,39 +19,23 @@ class CommonService
             $ext = $file->getUploadExtension();
             $type = $params['type'] ?? 'common';
             $fileFullPath = $file->getRealPath();
-            $curlFile = new CURLFile($fileFullPath);
             $md5 = md5_file($fileFullPath);
             $path = '/upload/' . $type . '/' . $md5 . '.' . $ext;
             // 文件已存在直接返回
-            $fileInfo = EmsAttachment::where('md5_file', $md5)
+            $fileInfo = EgAttachment::where('md5_file', $md5)
                 ->first();
             if ($fileInfo) {
                 return $fileInfo;
             }
 
-            $wechatAgentHost = env('WECHAT_TCP_SERVER_HOST', '');
-            if (!$wechatAgentHost) {
-                tips('配置错误！');
-            }
-            $url = 'http://'. $wechatAgentHost . '/admin/admin/upload-img';
-            $data = [
-                'file' => $curlFile,
-                'type' => $type,
+            return EgAttachment::create([
+                'file_name' => $name,
+                'md5_file' => $md5,
                 'ext' => $ext,
-                'secret' => 'rqp3a7EYFZl1jGyf',
-            ];
-            $res = curlRun($url, $data, [], 'POST');
-            if ($res) {
-                return EmsAttachment::create([
-                    'file_name' => $name,
-                    'md5_file' => $md5,
-                    'ext' => $ext,
-                    'path' => $path,
-                    'size' => $size,
-                    'type' => EmsAttachment::TYPE[$type] ?? 0,
-                ]);
-            }
-            tips('上传失败!');
+                'path' => $path,
+                'size' => $size,
+                'type' => EgAttachment::TYPE[$type] ?? 0,
+            ]);
         } catch(\Exception $e) {
             Log::error("文件上传失败！". $e->getMessage());
             throw $e;
@@ -80,7 +65,7 @@ class CommonService
             $path = '/upload/' . $type . '/' . $md5 . '.' . $ext;
 
             // 文件已存在直接返回
-            $fileInfo = EmsAttachment::where('md5_file', $md5)
+            $fileInfo = EgAttachment::where('md5_file', $md5)
                 ->first();
             if ($fileInfo) {
                 return $fileInfo;
@@ -116,13 +101,13 @@ class CommonService
             }
             fclose($stream);
             // 入库
-            return EmsAttachment::create([
+            return EgAttachment::create([
                 'file_name' => $name,
                 'md5_file' => $md5,
                 'ext' => $ext,
                 'path' => $path,
                 'size' => $size,
-                'type' => EmsAttachment::TYPE[$type] ?? 0,
+                'type' => EgAttachment::TYPE[$type] ?? 0,
             ]);
         } catch(\Exception $e) {
             Log::error("文件上传失败！". $e->getMessage());
