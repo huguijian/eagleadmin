@@ -2,6 +2,7 @@
 
 namespace plugin\eagleadmin\app;
 
+use plugin\eagleadmin\app\model\EgAttachment;
 use plugin\eagleadmin\app\model\EmsAttachment;
 
 class UploadValidator extends BaseValidate
@@ -9,7 +10,6 @@ class UploadValidator extends BaseValidate
     protected $rule =   [
         'file' => 'require',
         'size' => 'checkSize',
-        'type' => 'checKType',
         'ext' => 'checkExt',
     ];
 
@@ -27,16 +27,6 @@ class UploadValidator extends BaseValidate
         return true;
     }
 
-    protected function checkType($value, $rule, $data = [], $field = '')
-    {
-        $type = $data['type'];
-        if (!isset(EmsAttachment::TYPE[$type])) {
-            $keyArr = array_keys(EmsAttachment::TYPE);
-            $vals = implode(',', $keyArr);
-            return 'type值只能传固定的值，如需增加请联系开发，目前可能的值为：'. $vals;
-        }
-        return true;
-    }
 
     protected function checkExt($value, $rule, $data = [], $field = '')
     {

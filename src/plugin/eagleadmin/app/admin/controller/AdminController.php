@@ -9,6 +9,7 @@ use jwt\JwtInstance;
 use plugin\eagleadmin\app\admin\logic\AdminLogic;
 use plugin\eagleadmin\app\admin\validate\AdminValidate;
 use plugin\eagleadmin\app\BaseController;
+use plugin\eagleadmin\app\model\EgAttachment;
 use plugin\eagleadmin\app\model\EmsAttachment;
 use plugin\eagleadmin\app\model\EmsMenu;
 use plugin\eagleadmin\app\service\CommonService;
@@ -24,8 +25,7 @@ class AdminController extends BaseController
      * 不需要登录
      * @var array
      */
-    protected $noNeedLogin = ['login', 'refresh','getCaptcha', 'weappUpload'];
-    protected $noNeedAuth = ['weappUpload'];
+    protected $noNeedLogin = ['login', 'refresh','getCaptcha','upload'];
 
     public function index()
     {
@@ -119,20 +119,12 @@ class AdminController extends BaseController
             'type' => $params['type'] ?? 'common',
         ]);
         $fileInfo = (new CommonService())->upload($params);
-        $fileInfo['path'] = $fileInfo['path'] ? '//'. env('WECHAT_TCP_SERVER_HOST', '') .$fileInfo['path'] : '';
         if ($fileInfo) {
             return $this->success($fileInfo, '上传成功!');
         }
         return $this->error('上传失败!');
     }
 
-    /**
-     * 小程序端上传不校验权限
-     */
-    public function weappUpload(Request $request)
-    {
-        return $this->upload($request);
-    }
 
     /**
      * 下载
@@ -141,7 +133,7 @@ class AdminController extends BaseController
      */
     public function download(Request $request)
     {
-        $attachment = EmsAttachment::find($request->input('attachment_id'));
+        $attachment = EgAttachment::find($request->input('attachment_id'));
         if (!$attachment) {
             return $this->error('文件不存在!');
         }
