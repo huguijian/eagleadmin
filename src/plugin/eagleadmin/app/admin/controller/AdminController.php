@@ -116,9 +116,8 @@ class AdminController extends BaseController
             'file' => $params['file'],
             'size' => $params['file']->getSize(),
             'ext'  => $params['file']->getUploadExtension(),
-            'type' => $params['type'] ?? 'common',
         ]);
-        $fileInfo = (new CommonService())->upload($params);
+        $fileInfo = (new CommonService())->upload($params,$params['app']??'');
         if ($fileInfo) {
             return $this->success($fileInfo, '上传成功!');
         }

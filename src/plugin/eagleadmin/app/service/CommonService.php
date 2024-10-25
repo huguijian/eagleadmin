@@ -56,7 +56,7 @@ class CommonService
                 'ext' => $ext,
                 'path' => $path,
                 'size' => $size,
-                'type' => EgAttachment::TYPE[$type] ?? 0,
+                'type' => $type,
             ]);
 
         } catch(\Exception $e) {
