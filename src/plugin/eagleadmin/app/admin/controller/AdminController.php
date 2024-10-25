@@ -10,6 +10,7 @@ use plugin\eagleadmin\app\admin\logic\AdminLogic;
 use plugin\eagleadmin\app\admin\validate\AdminValidate;
 use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgAttachment;
+use plugin\eagleadmin\app\model\EgMenu;
 use plugin\eagleadmin\app\model\EmsAttachment;
 use plugin\eagleadmin\app\model\EmsMenu;
 use plugin\eagleadmin\app\service\CommonService;
@@ -25,7 +26,7 @@ class AdminController extends BaseController
      * 不需要登录
      * @var array
      */
-    protected $noNeedLogin = ['login', 'refresh','getCaptcha','upload'];
+    protected $noNeedLogin = ['login', 'refresh','getCaptcha'];
 
     public function index()
     {
@@ -35,7 +36,7 @@ class AdminController extends BaseController
 //                ->orWhere('type', 'menu');
 //        })->where("pid",0)->get();
 
-        $menus = EmsMenu::orderBy("weigh","asc")->where("status",1)->get();
+        $menus = EgMenu::orderBy("weigh","asc")->where("status",1)->get();
         $menus = AdminLogic::getTreeMenuNormal($menus);
 
         return $this->success([
