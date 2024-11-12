@@ -1,8 +1,15 @@
 <?php
+namespace plugin\eagleadmin\api;
+use plugin\eagleadmin\app\model\EgUser;
+
 class User
 {
     use \plugin\eagleadmin\app\Crud;
 
+    public function __construct()
+    {
+        $this->model = new EgUser();
+    }
     /**
      * 获取所有用户列表
      * @param \support\Request $request
