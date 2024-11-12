@@ -560,6 +560,7 @@ trait Crud
     {
         $order = $request->get('order', 'id,desc');
         $page_size = $request->get('limit', 10);
+        $this->pageSize = $page_size;
         $where = $request->get("search") ?? [];
         if (is_null($model)) {
             $table = $this->model->getTable();
