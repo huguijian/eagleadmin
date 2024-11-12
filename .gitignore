@@ -1,2 +1,2 @@
-plugin/*
-!plugin/eagleadmin/
+src/plugin/*
+!src/plugin/eagleadmin/
