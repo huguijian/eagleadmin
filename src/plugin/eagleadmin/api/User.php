@@ -3,7 +3,6 @@ class User
 {
     use \plugin\eagleadmin\app\Crud;
 
-
     /**
      * 获取所有用户列表
      * @param \support\Request $request
