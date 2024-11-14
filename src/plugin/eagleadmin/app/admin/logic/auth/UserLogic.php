@@ -221,8 +221,4 @@ class UserLogic
 
         return $newArr;
     }
-
-
-
-
 }
