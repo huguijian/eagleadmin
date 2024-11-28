@@ -179,35 +179,34 @@ trait Crud
 
         foreach ($where as $column=>$value) {
             if (isset($value["operator"])) {
-                if (strtolower($value["operator"]) == 'like') {
+                if (strtolower($value["operator"]) == 'like' || strtolower($value["operator"]) == 'not like'){
                     $model->where($value["field"],$value["operator"], "%".$value["val"]."%");
-                } elseif (strtolower($value["operator"]) == 'in') {
+                }elseif (in_array(strtolower($value["operator"]),['>', '=', '<', '<>','>=','<='])) {
+                    $model->where($value["field"], $value["val"]);
+                }elseif (strtolower($value["operator"]) == 'in') {
                     $model->whereIn($value["field"], $value["val"]);
-                } elseif (strtolower($value["operator"]) == '=') {
-                   $model->where($value["field"], $value["val"]);
-                } elseif(strtolower($value['operator']) == 'range') {
-                    $rangeVal = explode(",",$value["val"]);
-                    $rangeVal = array_map(function($val){
-                        if (is_numeric($val)) {
-                            if (strpos($val, '.') === false) {
-                                return intval($val);
-                            } else {
-                                return floatval($val);
-                            }
-                        }
-                    },$rangeVal);
-
-                    $model->whereBetween($value["field"], $rangeVal);
+                }elseif (strtolower($value["operator"]) == 'not in') {
+                    $valArr = $value['val'];
+                    if (is_string($valArr)) {
+                        $valArr = explode(",", trim($valArr));
+                    }
+                    $model = $model->whereNotIn($value['field'], $valArr);
+                }elseif (strtolower($value["operator"]) == 'null') {
+                    $model = $model->whereNull($value["field"]);
+                } elseif (strtolower($value["operator"]) == 'not null') {
+                    $model = $model->whereNotNull($value["field"]);
+                } elseif(strtolower($value['operator']) == 'range' || strtolower($value['operator']) == 'between') {
+                    $valArr = $value['val'];
+                    if (is_string($valArr)) {
+                        $valArr = explode(',',$valArr);
+                    }
+                    $model->whereBetween($value["field"], $valArr);
                 }
             }else{
-                $model->where($column, $value);
+                $model->where($value);
             }
         }
-        // 附加查询条件
-        if ($this->whereArr) {
-            //$model = $model->where(DB::raw("num"), "<=", DB::raw("alarm_num"));
-            $model->where($this->whereArr);
-        }
+
         if ($order && strpos($order,",")) {
             $order = explode(",",$order);
             $model->orderBy($order[0], $order[1]);
