@@ -36,7 +36,8 @@ class EgDictCategory extends Base
      */
     public $timestamps = false;
 
-
-    
-    
+    public function dict()
+    {
+        return $this->hasMany(EgDict::class, 'category_id', 'id');
+    }
 }

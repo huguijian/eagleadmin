@@ -1,6 +1,4 @@
 <?php
-
-
 namespace plugin\eagleadmin\app\middleware;
 
 use plugin\eagleadmin\app\model\EgLog;

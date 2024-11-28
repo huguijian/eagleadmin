@@ -10,8 +10,6 @@ use support\Log;
 
 class CommonService
 {
-
-
     /**
      * 上传文件至本地
      * @param $params
@@ -36,7 +34,7 @@ class CommonService
             // 文件已存在直接返回
             $fileInfo = EgAttachment::where('md5_file', $md5)
                 ->first();
-            if ($fileInfo) {
+            if ($fileInfo && file_exists(public_path().'/'.$fileInfo['path'])) {
                 return $fileInfo;
             }
 
@@ -64,5 +62,4 @@ class CommonService
             throw $e;
         }
     }
-
 }

@@ -14,14 +14,13 @@ class EgUser extends Base
     protected $fillable = [
         'password',
         'nick_name',
-        'avatar_id',
+        'avatar',
         'email',
         'remark',
         'user_name',
         'phone',
         'status',
     ];
-
 
     protected $hidden = [
         'password',
@@ -38,8 +37,6 @@ class EgUser extends Base
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';
-
-
 
     public function department()
     {

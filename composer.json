@@ -13,8 +13,8 @@
     "gregwar/captcha": "^1.2",
     "illuminate/redis": "^10.48",
     "topthink/think-validate": "^2.0",
-    "tinywan/jwt": "^1.6",
-    "shopwwi/webman-filesystem": "^1.1"
+    "shopwwi/webman-filesystem": "^1.1",
+    "tinywan/jwt": "^1.10"
   },
   "autoload": {
     "psr-4": {

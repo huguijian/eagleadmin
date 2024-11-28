@@ -7,6 +7,7 @@ use plugin\eagleadmin\app\model\EgMenu;
 use plugin\eagleadmin\app\model\EgUserRole;
 use support\exception\BusinessException;
 use \Tinywan\Jwt\JwtToken;
+use plugin\eagleadmin\app\admin\logic\UserLogic;
 
 /**
  * 对外提供的鉴权接口
@@ -56,7 +57,6 @@ class Auth
             return true;
         }
 
-
         try {
             // 支持url传token
             $token = request()->input('token');
@@ -89,6 +89,19 @@ class Auth
             return true;
         }
 
+        // id为1的为超级管理员
+        if ($accessUserId == 1) {
+            return true;
+        }
+
+        $user = getUserInfo();
+        $codes = (new UserLogic())->getCodes($user);
+        if (!in_array(request()->path(), $codes)) {
+            $msg = '无权限';
+            $code = 2;
+            return false;
+        }
+        /*
         $roleIds = EgUserRole::where("user_id",$accessUserId)->pluck("role_id");
         $rules   = EgRole::whereIn("id",$roleIds)->pluck("rules");
         // 角色没有规则
@@ -119,6 +132,7 @@ class Auth
             $code = 2;
             return false;
         }
+        */
 
         return true;
     }

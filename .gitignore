@@ -1,2 +1,3 @@
 src/plugin/*
 !src/plugin/eagleadmin/
+vendor/

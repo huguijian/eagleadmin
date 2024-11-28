@@ -16,7 +16,7 @@ class UploadValidator extends BaseValidate
     protected $message  =   [
         'file.require' => '请选择上传文件!',
     ];
-    
+
     protected function checkSize($value, $rule, $data = [], $field = '')
     {
         $size = $data['size'] ?? '';
@@ -27,14 +27,17 @@ class UploadValidator extends BaseValidate
         return true;
     }
 
-
     protected function checkExt($value, $rule, $data = [], $field = '')
     {
         $ext = $data['ext'];
-        $type = $data['type'];
-        if ($type == 'material') {
-            if (!in_array(strtolower($ext), ['doc', 'docx', 'xls', 'xlsx', 'pdf', 'png', 'jpg', 'jpeg'])) {
-                return '物料上传仅支持pdf,word,image格式';
+        $type = $data['type'] ?? 'image';
+        if ($type == 'mix') {
+            if (!in_array(strtolower($ext), ['doc', 'docx', 'xls', 'xlsx', 'pdf', 'png', 'jpg', 'jpeg', 'webp'])) {
+                return '上传仅支持pdf,word,image格式';
+            }
+        } else {
+            if (!in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'webp', 'gif'])) {
+                return '上传仅支持图片格式png,jpg,jpeg,webp,gif';
             }
         }
         return true;

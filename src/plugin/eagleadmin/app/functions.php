@@ -3,7 +3,10 @@
  * Here is your custom functions.
  */
 use support\Response;
+use support\Log;
 use plugin\eagleadmin\app\exception\BusinessException as MyBusinessException;
+use Tinywan\Jwt\JwtToken;
+use Tinywan\Jwt\Exception\JwtTokenExpiredException;
 
 /**
  * 当前管理员
@@ -147,5 +150,32 @@ if (!function_exists("rand_verify_num")) {
         }
 
         return $num;
+    }
+}
+
+if (!function_exists('getUid')) {
+    function getUid() {
+        try {
+            $uid = JwtToken::getCurrentId();
+        } catch (\Throwable $e) {
+            if ($e instanceof JwtTokenExpiredException ) {
+                Log::info('---会话已过期---', [request()->header()]);
+                return new Response(401, ['Content-Type' => 'application/json'],
+                                \json_encode(['msg' => $e->getMessage(), 'code' => 401], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            }
+            throw $e;
+        }
+        return $uid;
+    }
+}
+
+if (!function_exists('getUserInfo')) {
+    function getUserInfo()
+    {
+        try {
+            $userInfo = JwtToken::getUser();
+        } catch (\Throwable $e) {
+        }
+        return $userInfo ?? null;
     }
 }

@@ -24,6 +24,16 @@ class EgRole extends Base
      */
     protected $casts = ['userId' => 'integer', 'roleId' => 'integer'];
 
+    public function menus()
+    {
+        return $this->belongsToMany(
+            EgMenu::class,
+            EgRoleMenu::class,
+            'role_id',
+            'menu_id',
+        );
+    }
+
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';

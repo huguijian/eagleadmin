@@ -10,6 +10,8 @@ use plugin\eagleadmin\app\admin\logic\AdminLogic;
 use plugin\eagleadmin\app\admin\validate\AdminValidate;
 use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgAttachment;
+use plugin\eagleadmin\app\model\EgDict;
+use plugin\eagleadmin\app\model\EgDictCategory;
 use plugin\eagleadmin\app\model\EgMenu;
 use plugin\eagleadmin\app\model\EmsAttachment;
 use plugin\eagleadmin\app\model\EmsMenu;
@@ -18,6 +20,7 @@ use plugin\eagleadmin\app\UploadValidator;
 use support\Redis;
 use support\Request;
 use Tinywan\Jwt\JwtToken;
+use support\Log;
 
 class AdminController extends BaseController
 {
@@ -27,38 +30,6 @@ class AdminController extends BaseController
      * @var array
      */
     protected $noNeedLogin = ['login', 'refresh','getCaptcha'];
-
-    public function index()
-    {
-        $userInfo = JwtToken::getUser();
-//        $menus = SysMenu::where(function($query){
-//            $query->where('type', 'menu_dir')
-//                ->orWhere('type', 'menu');
-//        })->where("pid",0)->get();
-
-        $menus = EgMenu::orderBy("weigh","asc")->where("status",1)->get();
-        $menus = AdminLogic::getTreeMenuNormal($menus);
-
-        return $this->success([
-            "adminInfo" => $userInfo,
-            "menus" => $menus,
-            "siteConfig" => [
-                "apiUrl" => "",
-                "cdnUrl" => "",
-                "siteName" => "",
-                "upload" => [
-                    "maxsize" => 10485760,
-                    "mimetype" => "jpg,png,bmp,jpeg,gif,webp,zip,rar,xls,xlsx,doc,docx,wav,mp4,mp3,txt",
-                    "mode" => "local",
-                    "savename" => "/storage/{topic}/{year}{mon}{day}/{filesha1}{.suffix}"
-                ],
-            ],
-            "terminal" => [
-                "installServicePort" => "8000",
-                "npmPackageManager" => "pnpm",
-            ]
-        ]);
-    }
 
     /**
      * 用户登录
@@ -152,4 +123,13 @@ class AdminController extends BaseController
         return $this->success($res);
     }
 
+    public function dictAll(Request $request)
+    {
+        $dcs = EgDictCategory::where('status', 1)->get();
+        $res = [];
+        foreach($dcs as $dc) {
+            $res[][$dc['code']] = optional($dc['dict'])->toArray();
+        }
+        return $this->success($res, '查询成功！');
+    }
 }
