@@ -206,6 +206,11 @@ trait Crud
                 $model->where($value);
             }
         }
+        // 附加查询条件
+        if ($this->whereArr) {
+            //$model = $model->where(DB::raw("num"), "<=", DB::raw("alarm_num"));
+            $model->where($this->whereArr);
+        }
 
         if ($order && strpos($order,",")) {
             $order = explode(",",$order);
