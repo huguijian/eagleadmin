@@ -44,17 +44,7 @@ class UserController extends BaseController
 
     public function update(Request $request): Response
     {
-        if ($request->method() == "POST") {
-            $id = $request->input('id', getUid());
-            $params = $request->all();
-            $this->model = new EgUser();
-            $params = $this->inputFilter($params);
-            $res = EgUser::where('id', $id)->update($params);
-            if ($res) {
-                return $this->success([], '更新成功!');
-            }
-            return $this->error('更新失败!');
-        }
+        return parent::update($request);
     }
 
     public function select(Request $request): Response
@@ -62,7 +52,6 @@ class UserController extends BaseController
         $search = $request->input('search');
         var_dump($search);
         var_dump($search[0]['field']);
-        $res = $this->selectData($request);
-        return $this->success($res, 'ok');
+        return parent::select($request);
     }
 }

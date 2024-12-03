@@ -75,6 +75,11 @@ trait Crud
     protected $dataLimitField = 'admin_id';
 
     /**
+     * select自定义排序,例如：sort,desc
+     */
+    protected $orderBy = null;
+
+    /**
      * 查询
      *
      * @param Request $request
@@ -83,6 +88,7 @@ trait Crud
     public function select(Request $request):Response
     {
         [$where, $pageSize, $order] = $this->selectInput($request);
+        $order = $this->orderBy ?? 'id,desc';
         $model = $this->selectMap($where,$order);
         if ($this->pageSize == -1) { // 值为-1表示不分页
             $list = $model->get() ?? [];
