@@ -36,6 +36,7 @@ class AdminLogic
             return false;
         }
 
+        /*
         if (getenv('APP_ENV')!=='local') {
             $redisCaptcha = Redis::get("eagleadmin:captcha:code:".$captchaId);
 
@@ -52,6 +53,7 @@ class AdminLogic
                 return false;
             }
         }
+        */
 
         //        $tmp = Redis::get("captcha:code:".$captchaId);
         //        if (strtolower($verifyCode)!=strtolower($tmp)) {
