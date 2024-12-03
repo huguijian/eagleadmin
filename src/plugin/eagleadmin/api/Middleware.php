@@ -28,24 +28,7 @@ class Middleware implements MiddlewareInterface
         $code = 0;
         $msg = '';
         if (!Auth::canAccess($controller, $action, $code, $msg)) {
-            if ($request->expectsJson()) {
-                $response = json(['code' => $code, 'msg' => $msg, 'type' => 'error']);
-            } else {
-                if ($code === 401) {
-                    $response = response(<<<EOF
-<script>
-    if (self !== top) {
-        parent.location.reload();
-    }
-</script>
-EOF
-                    );
-                } else {
-                    $request->app = '';
-                    $request->plugin = 'admin';
-                    $response = view('common/error/403')->withStatus(403);
-                }
-            }
+            $response = json(['code' => $code, 'msg' => $msg, 'type' => 'error']);
         } else {
             $response = $request->method() == 'OPTIONS' ? response('') : $handler($request);
         }
