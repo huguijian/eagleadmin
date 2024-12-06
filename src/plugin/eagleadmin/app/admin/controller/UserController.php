@@ -58,8 +58,18 @@ class UserController extends BaseController
     public function select(Request $request): Response
     {
         $search = $request->input('search');
-        var_dump($search);
-        var_dump($search[0]['field']);
         return parent::select($request);
+    }
+
+    public function changeStatus(Request $request): Response
+    {
+        $params = $request->all();
+        $id = $params['id'];
+        $status = $params['status'];
+        $res = EgUser::where('id', $id)->update(['status' => $status]);
+        if ($res) {
+            return $this->success([], '更新成功！');
+        }
+        return $this->error('更新失败');
     }
 }
