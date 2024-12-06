@@ -8,7 +8,7 @@ use support\Request;
 use support\Db;
 use support\Response;
 
-class DictController extends BaseController
+class DictCategoryController extends BaseController
 {
     protected $model;
 
