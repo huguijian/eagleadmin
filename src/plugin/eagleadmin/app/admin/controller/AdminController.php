@@ -123,13 +123,4 @@ class AdminController extends BaseController
         return $this->success($res);
     }
 
-    public function dictAll(Request $request)
-    {
-        $dcs = EgDictCategory::where('status', 1)->get();
-        $res = [];
-        foreach($dcs as $dc) {
-            $res[][$dc['code']] = optional($dc['dict'])->toArray();
-        }
-        return $this->success($res, '查询成功！');
-    }
 }
