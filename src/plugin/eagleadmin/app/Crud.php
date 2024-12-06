@@ -285,7 +285,7 @@ trait Crud
     public function inputFilter(array $data=[],$model=null):array
     {
         if ($this->params) {
-            $data = array_merge($this->params,$data);
+            $data = array_merge($data, $this->params);
         }
 
         if (is_null($model)) {

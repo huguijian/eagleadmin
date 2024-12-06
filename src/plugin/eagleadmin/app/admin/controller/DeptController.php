@@ -24,7 +24,12 @@ class DeptController extends BaseController
     public function select(Request $request) :Response
     {
         $this->callBack = function($data) {
-            $data = collect($data)->toArray();
+            $data = collect($data)->map(function($item){
+                    $item['label'] = $item['name'];
+                    $item['value'] = $item['id'];
+                    return $item;
+                })
+                ->toArray();
             return Helper::makeTree($data);
         };
         return parent::select($request);

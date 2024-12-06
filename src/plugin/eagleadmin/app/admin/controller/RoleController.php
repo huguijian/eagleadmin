@@ -12,6 +12,7 @@ use plugin\eagleadmin\app\model\EgRole;
 use plugin\eagleadmin\app\UploadValidator;
 use plugin\eagleadmin\app\service\CommonService;
 use plugin\eagleadmin\app\model\EgUser;
+use plugin\eagleadmin\utils\Helper;
 
 class RoleController extends BaseController
 {
@@ -19,5 +20,19 @@ class RoleController extends BaseController
 
     public function __construct() {
         $this->model = new EgRole();
+    }
+
+    public function select(Request $request) :Response
+    {
+        $this->callBack = function($data) {
+            $data = collect($data)->map(function($item){
+                    $item['label'] = $item['name'];
+                    $item['value'] = $item['id'];
+                    return $item;
+                })
+                ->toArray();
+            return Helper::makeTree($data);
+        };
+        return parent::select($request);
     }
 }

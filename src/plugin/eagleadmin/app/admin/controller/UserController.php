@@ -42,6 +42,14 @@ class UserController extends BaseController
         return $this->success($info);
     }
 
+    public function insert(Request $request): Response
+    {
+        $params = $request->all();
+        $params['avatar'] = $params['avatar'] ?? 'aab';
+        $this->params = $params;
+        return parent::insert($request);
+    }
+
     public function update(Request $request): Response
     {
         return parent::update($request);
