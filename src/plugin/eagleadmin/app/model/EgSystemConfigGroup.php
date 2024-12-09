@@ -10,4 +10,7 @@ class EgSystemConfigGroup extends Base
      * @var string
      */
     protected $table = 'eg_system_config_group';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
 }
