@@ -40,12 +40,7 @@ class EgUser extends Base
 
     public function department()
     {
-        return $this->belongsToMany(
-            EgDepartment::class,
-            'eg_user_department',
-            'user_id',
-            'department_id',
-        );
+        return $this->hasOne(EgDepartment::class, 'id', 'dept_id');
     }
 
     public function roles()

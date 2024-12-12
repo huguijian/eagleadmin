@@ -34,6 +34,16 @@ class EgRole extends Base
         );
     }
 
+    public function depts()
+    {
+        return $this->belongsToMany(
+            EgDepartment::class,
+            EgRoleDept::class,
+            'role_id',
+            'dept_id',
+        );
+    }
+
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';

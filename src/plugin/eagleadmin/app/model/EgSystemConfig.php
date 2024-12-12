@@ -10,4 +10,6 @@ class EgSystemConfig extends Base
      * @var string
      */
     protected $table = 'eg_system_config';
+
+    public $timestamps = false;
 }

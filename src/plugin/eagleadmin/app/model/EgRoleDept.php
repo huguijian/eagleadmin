@@ -3,14 +3,14 @@
 namespace plugin\eagleadmin\app\model;
 
 
-class EgRoleDepartment extends Base
+class EgRoleDept extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'eg_role_department';
+    protected $table = 'eg_role_dept';
 
     const CREATED_AT = 'create_time';
 

@@ -10,6 +10,7 @@ use plugin\eagleadmin\app\admin\logic\UserLogic;
 use plugin\eagleadmin\app\UploadValidator;
 use plugin\eagleadmin\app\service\CommonService;
 use plugin\eagleadmin\app\model\EgUser;
+use plugin\eagleadmin\app\model\EgUserRole;
 
 class UserController extends BaseController
 {
@@ -52,7 +53,35 @@ class UserController extends BaseController
 
     public function update(Request $request): Response
     {
-        return parent::update($request);
+        if ($request->method() == "POST") {
+            $roleIds = $request->input('role_ids');
+            $id = $request->input('id');
+            try {
+                Db::beginTransaction();
+                $refData = [];
+                EgUserRole::where('user_id', $id)->delete();
+                foreach($roleIds as $roleId) {
+                    $refData[]  = [
+                        'user_id' => $id,
+                        'role_id' => $roleId,
+                    ];
+                }
+                EgUserRole::insert($refData);
+                $res = parent::update($request);
+                Db::commit();
+            } catch(\Exception $e) {
+                Db::rollBack();
+                throw $e;
+            }
+            return $res;
+        } else {
+            $this->callBack = function($item) {
+                $role = $item['roles'] ?? [];
+                $item['role_ids'] = $role ? $role->pluck('id') : [];
+                return $item;
+            };
+            return parent::update($request);
+        }
     }
 
     public function select(Request $request): Response

@@ -5,6 +5,7 @@ namespace plugin\eagleadmin\app\admin\logic;
 use Illuminate\Support\Facades\Request;
 use plugin\eagleadmin\utils\Helper;
 use plugin\eagleadmin\app\model\EgMenu;
+use support\Db;
 
 class MenuLogic
 {
@@ -17,7 +18,7 @@ class MenuLogic
         }
         if (request()->input('tree', 'false') === 'true')
         {
-            $query->field('id, id as value, name as label, parent_id');
+            $query->select('id', Db::raw('id as value'), Db::raw('name as label'), 'parent_id');
         }
         $query->orderBy('sort', 'desc');
         $data = $query->get()

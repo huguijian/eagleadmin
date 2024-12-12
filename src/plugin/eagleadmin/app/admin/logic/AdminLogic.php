@@ -65,9 +65,7 @@ class AdminLogic
             "phone" => $userInfo["phone"],
             "org_id" => $userInfo["org_id"]
         ]);
-        $departmentName = $userInfo['department']['name'] ?? '';
-
-
+        $department = $userInfo['department'] ?? [];
         $data = [
             "token" => $token["access_token"],
             "expires_in" =>$token['expires_in'],
@@ -77,8 +75,7 @@ class AdminLogic
             "nickname" => $userInfo["nick_name"],
             "refresh_token" => $token["refresh_token"],
             "username" => $userInfo["user_name"],
-            "department_id" => $userInfo['department_id'],
-            "department_name" => $departmentName,
+            "department_name" => $department['name'] ?? '',
         ];
         return true;
     }
