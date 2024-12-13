@@ -46,10 +46,15 @@ class UserController extends BaseController
     public function insert(Request $request): Response
     {
         $params = $request->all();
-        $params['avatar'] = $params['avatar'] ?? 'aab';
+        $params['avatar'] = $params['avatar'] ?? '';
+        $password = $params['password'] ?? '';
+        if (!$password) {
+            return $this->error('密码必填！');
+        }
         $inputData = $this->inputFilter($params);
         try {
             Db::beginTransaction();
+            $inputData['password'] = password_hash($inputData['password'], PASSWORD_BCRYPT, ["cost" => 12]);
             $userId = EgUser::insertGetId($inputData);
             $roleIds = $request->input('role_ids');
 
@@ -74,6 +79,9 @@ class UserController extends BaseController
         if ($request->method() == "POST") {
             $roleIds = $request->input('role_ids');
             $id = $request->input('id');
+            $password = $request->input('password');
+            $params = $request->all();
+            $inputData = $this->inputFilter($params);
             try {
                 Db::beginTransaction();
                 $refData = [];
@@ -85,13 +93,16 @@ class UserController extends BaseController
                     ];
                 }
                 EgUserRole::insert($refData);
-                $res = parent::update($request);
+                if ($password) {
+                    $inputData['password'] = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
+                }
+                EgUser::where('id', $id)->update($inputData);
                 Db::commit();
             } catch(\Exception $e) {
                 Db::rollBack();
                 throw $e;
             }
-            return $res;
+            return $this->success([], '更新成功！');
         } else {
             $this->callBack = function($item) {
                 $role = $item['roles'] ?? [];
@@ -124,7 +135,7 @@ class UserController extends BaseController
     {
         $password = 'ssy123';
         $id = $request->input('id');
-        $password = md5($password);
+        $password = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
         EgUser::where('id', $id)->update(['password' => $password]);
         return $this->success([], '重置密码成功！');
     }
