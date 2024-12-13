@@ -122,9 +122,9 @@ class UserController extends BaseController
 
     public function initPassword(Request $request): Response
     {
-        $password = 'ssy123456';
+        $password = 'ssy123';
         $id = $request->input('id');
-        $password = md5();
+        $password = md5($password);
         EgUser::where('id', $id)->update(['password' => $password]);
         return $this->success([], '重置密码成功！');
     }
