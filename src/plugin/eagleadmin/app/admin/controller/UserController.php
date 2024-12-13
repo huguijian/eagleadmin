@@ -47,8 +47,26 @@ class UserController extends BaseController
     {
         $params = $request->all();
         $params['avatar'] = $params['avatar'] ?? 'aab';
-        $this->params = $params;
-        return parent::insert($request);
+        $inputData = $this->inputFilter($params);
+        try {
+            Db::beginTransaction();
+            $userId = EgUser::insertGetId($inputData);
+            $roleIds = $request->input('role_ids');
+
+            $refData = [];
+            foreach($roleIds as $roleId) {
+                $refData[]  = [
+                    'user_id' => $userId,
+                    'role_id' => $roleId,
+                ];
+            }
+            EgUserRole::insert($refData);
+            Db::commit();
+        } catch(\Exception $e) {
+            Db::rollBack();
+            throw $e;
+        }
+        return $this->success([], '添加成功！');
     }
 
     public function update(Request $request): Response
@@ -100,5 +118,14 @@ class UserController extends BaseController
             return $this->success([], '更新成功！');
         }
         return $this->error('更新失败');
+    }
+
+    public function initPassword(Request $request): Response
+    {
+        $password = 'ssy123456';
+        $id = $request->input('id');
+        $password = md5();
+        EgUser::where('id', $id)->update(['password' => $password]);
+        return $this->success([], '重置密码成功！');
     }
 }
