@@ -12,6 +12,8 @@ class DictCategoryController extends BaseController
 {
     protected $model;
 
+    protected $noNeedAuth = ['dictAll'];
+
     public function __construct() {
         $this->model = new EgDictCategory();
     }

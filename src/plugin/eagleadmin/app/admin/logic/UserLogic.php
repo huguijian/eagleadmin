@@ -4,6 +4,7 @@ namespace plugin\eagleadmin\app\admin\logic;
 
 use plugin\eagleadmin\app\model\EgMenu;
 use plugin\eagleadmin\utils\Helper;
+use support\Log;
 
 class UserLogic
 {
@@ -60,7 +61,9 @@ class UserLogic
 
         // 获取用户的角色对应的菜单列表
         $menus = $roles ? $roles->pluck('menus') : null;
-        $menus ? $menus->unique()
+        $menus = $menus ? $menus->toArray() : [];
+        $menus = array_merge(...$menus);
+        $menus = $menus ? collect($menus)->unique()
             ->values()
             ->toArray() : [];
         return Helper::makeArcoMenus($menus);
