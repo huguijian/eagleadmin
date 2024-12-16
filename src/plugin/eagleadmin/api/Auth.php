@@ -96,7 +96,9 @@ class Auth
 
         $user = getUserInfo();
         $codes = (new UserLogic())->getCodes($user);
-        if (!in_array(request()->path(), $codes)) {
+        $currentPath = request()->path();
+        $currentPath = str_replace('/app/eagleadmin', '', $currentPath);
+        if (!in_array($currentPath, $codes)) {
             $msg = '无权限';
             $code = 2;
             return false;
