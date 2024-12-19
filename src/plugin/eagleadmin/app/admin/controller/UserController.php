@@ -88,6 +88,18 @@ class UserController extends BaseController
         return $this->success([], '添加成功！');
     }
 
+    public function info(Request $request,$model=null): Response
+    {
+        $this->callBack = function($item) {
+            $role = $item['roles'] ?? [];
+            $item['role_ids'] = $role ? $role->pluck('id') : [];
+            $posts = $item['posts'] ?? [];
+            $item['post_ids'] = $posts ? $posts->pluck('id') : [];
+            return $item;
+        };
+        return parent::info($request);
+    }
+
     public function update(Request $request): Response
     {
         if ($request->method() == "POST") {
@@ -133,6 +145,8 @@ class UserController extends BaseController
             $this->callBack = function($item) {
                 $role = $item['roles'] ?? [];
                 $item['role_ids'] = $role ? $role->pluck('id') : [];
+                $posts = $item['posts'] ?? [];
+                $item['post_ids'] = $posts ? $posts->pluck('id') : [];
                 return $item;
             };
             return parent::update($request);
