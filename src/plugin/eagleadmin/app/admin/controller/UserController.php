@@ -133,6 +133,8 @@ class UserController extends BaseController
 
                 if ($password) {
                     $inputData['password'] = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
+                } else {
+                    unset($inputData['password']);
                 }
                 EgUser::where('id', $id)->update($inputData);
                 Db::commit();
