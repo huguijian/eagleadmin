@@ -33,6 +33,22 @@ class MenuController extends BaseController
         return $this->error('删除失败！');
     }
 
+    public function insert(Request $request):Response
+    {
+        $params = $request->all();
+        $params['appid'] = request()->header('appid', 'eagleadmin');
+        $this->params = $params;
+        return parent::insert($request);
+    }
+
+    public function update(Request $request):Response
+    {
+        $params = $request->all();
+        $params['appid'] = request()->header('appid', 'eagleadmin');
+        $this->params = $params;
+        return parent::update($request);
+    }
+
     public function recyle()
     {
 
