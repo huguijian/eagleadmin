@@ -10,6 +10,7 @@ use plugin\eagleadmin\app\admin\logic\UserLogic;
 use plugin\eagleadmin\app\UploadValidator;
 use plugin\eagleadmin\app\service\CommonService;
 use plugin\eagleadmin\app\model\EgUser;
+use plugin\eagleadmin\app\model\EgUserPost;
 use plugin\eagleadmin\app\model\EgUserRole;
 
 class UserController extends BaseController
@@ -58,8 +59,8 @@ class UserController extends BaseController
             Db::beginTransaction();
             $inputData['password'] = password_hash($inputData['password'], PASSWORD_BCRYPT, ["cost" => 12]);
             $userId = EgUser::insertGetId($inputData);
-            $roleIds = $request->input('role_ids');
 
+            $roleIds = $request->input('role_ids');
             $refData = [];
             foreach($roleIds as $roleId) {
                 $refData[]  = [
@@ -68,6 +69,17 @@ class UserController extends BaseController
                 ];
             }
             EgUserRole::insert($refData);
+
+            $postIds = $request->input('post_ids');
+            $refData = [];
+            foreach($postIds as $postId) {
+                $refData[]  = [
+                    'user_id' => $userId,
+                    'post_id' => $postId,
+                ];
+            }
+            EgUserPost::insert($refData);
+
             Db::commit();
         } catch(\Exception $e) {
             Db::rollBack();
@@ -80,6 +92,7 @@ class UserController extends BaseController
     {
         if ($request->method() == "POST") {
             $roleIds = $request->input('role_ids');
+            $postIds = $request->input('post_ids');
             $id = $request->input('id');
             $password = $request->input('password');
             $params = $request->all();
@@ -95,6 +108,17 @@ class UserController extends BaseController
                     ];
                 }
                 EgUserRole::insert($refData);
+
+                EgUserPost::where('user_id', $id)->delete();
+                $refData = [];
+                foreach($postIds as $postId) {
+                    $refData[]  = [
+                        'user_id' => $id,
+                        'post_id' => $postId,
+                    ];
+                }
+                EgUserPost::insert($refData);
+
                 if ($password) {
                     $inputData['password'] = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
                 }
