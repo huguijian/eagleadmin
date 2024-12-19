@@ -31,7 +31,12 @@ class DictCategoryController extends BaseController
         $dcs = EgDictCategory::where('status', 1)->get();
         $res = [];
         foreach($dcs as $dc) {
-            $res[][$dc['code']] = optional($dc['dict'])->toArray();
+            $dict = optional($dc['dict'])->toArray();
+            foreach($dict as $key => $val) {
+                $dict[$key]['label'] = $val['dict_name'];
+                $dict[$key]['value'] = $val['dict_value'];
+            }
+            $res[$dc['code']] = $dict;
         }
         return $this->success($res, '查询成功！');
     }
