@@ -602,7 +602,6 @@ trait Crud
                 $where[] = ['operator'=>'in','field'=>$this->dataLimitField,'val'=> Auth::getScopeAdminIds(true)];
             }
         }
-        var_dump($where);
 
         return [$where, $page_size, $order];
     }

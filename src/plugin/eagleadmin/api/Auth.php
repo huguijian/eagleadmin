@@ -98,7 +98,15 @@ class Auth
         $codes = (new UserLogic())->getCodes($user);
         $currentPath = request()->path();
         $currentPath = str_replace('/app/eagleadmin', '', $currentPath);
-        if (!in_array($currentPath, $codes)) {
+        $hasAuth = false;
+        foreach($codes as $code) {
+            // 仅考虑前缀匹配，即拥有的权限包含在当前path中即认为有权限，如当前路由/app/hzrjlims/sample/sample/select,权限配置为/app/hzrjlims/sample即算有权限
+            if (strpos($currentPath, $code) === 0) {
+                $hasAuth = true;
+                break;
+            }
+        }
+        if (!$hasAuth) {
             $msg = '无权限';
             $code = 2;
             return false;
