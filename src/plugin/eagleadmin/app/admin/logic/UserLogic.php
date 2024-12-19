@@ -13,7 +13,7 @@ class UserLogic
      */
     public function getAllMenus(): array
     {
-        $appid = request()->header('appid', 'eagleadmin');
+        $appid = request()->input('appid', 'eagleadmin');
         $allMenus = EgMenu::where(['type' => ['M','I','L']])
             ->where('appid', $appid)
             ->orderBy('sort', 'desc')
