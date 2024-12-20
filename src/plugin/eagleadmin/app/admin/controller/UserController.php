@@ -112,24 +112,28 @@ class UserController extends BaseController
             try {
                 Db::beginTransaction();
                 $refData = [];
-                EgUserRole::where('user_id', $id)->delete();
-                foreach($roleIds as $roleId) {
-                    $refData[]  = [
-                        'user_id' => $id,
-                        'role_id' => $roleId,
-                    ];
+                if ($roleIds) {
+                  EgUserRole::where('user_id', $id)->delete();
+                  foreach($roleIds as $roleId) {
+                      $refData[]  = [
+                          'user_id' => $id,
+                          'role_id' => $roleId,
+                      ];
+                  }
+                  EgUserRole::insert($refData);
                 }
-                EgUserRole::insert($refData);
 
-                EgUserPost::where('user_id', $id)->delete();
-                $refData = [];
-                foreach($postIds as $postId) {
-                    $refData[]  = [
-                        'user_id' => $id,
-                        'post_id' => $postId,
-                    ];
+                if ($postIds) {
+                  EgUserPost::where('user_id', $id)->delete();
+                  $refData = [];
+                  foreach($postIds as $postId) {
+                      $refData[]  = [
+                          'user_id' => $id,
+                          'post_id' => $postId,
+                      ];
+                  }
+                  EgUserPost::insert($refData);
                 }
-                EgUserPost::insert($refData);
 
                 if ($password) {
                     $inputData['password'] = password_hash($password, PASSWORD_BCRYPT, ["cost" => 12]);
