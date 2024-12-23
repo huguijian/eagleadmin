@@ -11,7 +11,9 @@ class MenuLogic
 {
     public function menu($search)
     {
+        $appid = request()->header('appid', 'eagleadmin');
         $query = EgMenu::query();
+        $query->where('appid', $appid);
         if ($search) {
             $search = array_filter($search);
             $query->where($search);

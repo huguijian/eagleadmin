@@ -53,4 +53,15 @@ class EgUser extends Base
             )
             ->withPivot(['create_time','update_time']);
     }
+
+    public function posts()
+    {
+        return $this->belongsToMany(
+                EgPost::class,
+                'eg_user_post',
+                'user_id',
+                'post_id'
+            )
+            ->withPivot(['create_time','update_time']);
+    }
 }
