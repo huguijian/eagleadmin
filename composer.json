@@ -1,0 +1,13 @@
+{
+  "name": "huguijian/eagleadmin",
+  "type": "library",
+  "license": "MIT",
+  "description": "Webman plugin huguijian/eagleadmin",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Huguijian\\Eagleadmin\\": "src"
+    }
+  }
+}
