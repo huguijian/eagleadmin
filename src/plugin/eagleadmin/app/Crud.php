@@ -183,40 +183,38 @@ trait Crud
             }
         }
 
-        foreach ($where as $column=>$value) {
-            if (isset($value["operator"])) {
-                if (strtolower($value["operator"]) == 'like' || strtolower($value["operator"]) == 'not like'){
-                    $model->where($value["field"],$value["operator"], "%".$value["val"]."%");
-                }elseif (in_array(strtolower($value["operator"]),['>', '=', '<', '<>','>=','<='])) {
-                    $model->where($value["field"], $value["val"]);
-                }elseif (strtolower($value["operator"]) == 'in') {
-                    $model->whereIn($value["field"], $value["val"]);
-                }elseif (strtolower($value["operator"]) == 'not in') {
-                    $valArr = $value['val'];
-                    if (is_string($valArr)) {
-                        $valArr = explode(",", trim($valArr));
+        foreach ($where as $value) {
+            if (isset($value["opt"])) {
+                if (!empty($value["val"])) {
+                    if (strtolower($value["opt"]) == 'like' || strtolower($value["opt"]) == 'not like'){
+                        $model->where($value["field"],$value["opt"], "%".$value["val"]."%");
+                    }elseif (in_array(strtolower($value["opt"]),['>', '=', '<', '<>','>=','<='])) {
+                        $model->where($value["field"], $value["val"]);
+                    }elseif (strtolower($value["opt"]) == 'in') {
+                        $model->whereIn($value["field"], $value["val"]);
+                    }elseif (strtolower($value["opt"]) == 'not in') {
+                        $valArr = $value['val'];
+                        if (is_string($valArr)) {
+                            $valArr = explode(",", trim($valArr));
+                        }
+                        $model = $model->whereNotIn($value['field'], $valArr);
+                    }elseif (strtolower($value["opt"]) == 'null') {
+                        $model = $model->whereNull($value["field"]);
+                    } elseif (strtolower($value["opt"]) == 'not null') {
+                        $model = $model->whereNotNull($value["field"]);
+                    } elseif(strtolower($value['opt']) == 'range' || strtolower($value['opt']) == 'between') {
+                        $valArr = $value['val'];
+                        if (is_string($valArr)) {
+                            $valArr = explode(',',$valArr);
+                        }
+                        $model->whereBetween($value["field"], $valArr);
                     }
-                    $model = $model->whereNotIn($value['field'], $valArr);
-                }elseif (strtolower($value["operator"]) == 'null') {
-                    $model = $model->whereNull($value["field"]);
-                } elseif (strtolower($value["operator"]) == 'not null') {
-                    $model = $model->whereNotNull($value["field"]);
-                } elseif(strtolower($value['operator']) == 'range' || strtolower($value['operator']) == 'between') {
-                    $valArr = $value['val'];
-                    if (is_string($valArr)) {
-                        $valArr = explode(',',$valArr);
-                    }
-                    $model->whereBetween($value["field"], $valArr);
                 }
             }else{
                 $model->where($value);
             }
         }
-        // 附加查询条件
-        if ($this->whereArr) {
-            //$model = $model->where(DB::raw("num"), "<=", DB::raw("alarm_num"));
-            $model->where($this->whereArr);
-        }
+
 
         if ($order && strpos($order,",")) {
             $order = explode(",",$order);
@@ -571,12 +569,11 @@ trait Crud
      * @param Request $request
      * @return array|\support\Response
      */
-    protected function selectInput(Request $request, $model=null): Response|array
+    protected function selectInput(Request $request, $model=null)
     {
         $order = $request->get('order', 'id,desc');
         $page_size = $request->get('limit', 10);
         $this->pageSize = $page_size;
-        $where = $request->get("search") ?? [];
         if (is_null($model)) {
             $table = $this->model->getTable();
         }else{
@@ -588,21 +585,14 @@ trait Crud
         if (!$allow_column) {
             return $this->json(2, '表不存在');
         }
-        $allow_column = array_column($allow_column, 'Field', 'Field');
 
-        foreach ($where as $key => $value) {
-            if ($value["val"] === '' || !isset($allow_column[$value["field"]]) ||
-                (is_array($value) && ($value["field"] == 'undefined' || $value["val"] == 'undefined'))) {
-                unset($where[$key]);
-            }
-        }
-
+        $where = [];
         // 按照数据限制字段返回数据
         if ($this->dataLimit === 'personal') {
             $where[$this->dataLimitField] = admin_id();
         } elseif ($this->dataLimit === 'auth') {
             $primary_key = $this->model->getKeyName();
-            if (!Auth::isSupperAdmin() && (!isset($where[$primary_key]) || $this->dataLimitField != $primary_key)) {
+            if (!Auth::isSupperAdmin() && $this->dataLimitField != $primary_key) {
 //                $where[$this->dataLimitField] = ['in', Auth::getScopeAdminIds(true)];
                 $where[] = ['operator'=>'in','field'=>$this->dataLimitField,'val'=> Auth::getScopeAdminIds(true)];
             }

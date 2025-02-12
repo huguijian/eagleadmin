@@ -165,8 +165,35 @@ class UserController extends BaseController
 
     public function select(Request $request): Response
     {
-        $search = $request->input('search');
-        return parent::select($request);
+        [$where, $pageSize, $order] = $this->selectInput($request);
+
+        $registerTime = $request->get('create_time');
+        array_push($where,
+            ['field'=>'user_name','opt'=>'like','val'=>$request->get('user_name')],
+            ['field'=>'phone','opt'=>'like','val'=>$request->get('phone')],
+            ['field'=>'email','opt'=>'like','val'=>$request->get('email')]
+        );
+
+        if ($registerTime) {
+            $where[] = ['field' => 'create_time', 'opt' => 'between', 'val' => [$registerTime[0], $registerTime[1]]];
+        }
+
+
+        $order = $this->orderBy ?? 'id,desc';
+        $model = $this->selectMap($where,$order);
+        if ($this->pageSize == -1) { // 值为-1表示不分页
+            $list = $model->get() ?? [];
+        } else {
+            $pageSize = $this->pageSize > 0 ? $this->pageSize : $pageSize;
+            $paginator = $model->paginate($pageSize);
+            $list = $paginator->items() ?? [];
+            $res['total'] = $paginator->total();
+        }
+        if ($this->callBack && is_callable($this->callBack)) {
+            $list = call_user_func($this->callBack, $list) ?? [];
+        }
+        $res['items'] = $list;
+        return $this->success($res, 'ok');
     }
 
     public function changeStatus(Request $request): Response
