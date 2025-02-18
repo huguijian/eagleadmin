@@ -1,7 +1,7 @@
 <?php
 
 namespace plugin\eagleadmin\app\model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * sys_dict 字典表
@@ -37,6 +37,10 @@ class EgDict extends Base
      * @var bool
      */
     public $timestamps = false;
-    
+
+
+    use SoftDeletes;
+
+    const DELETED_AT = 'delete_time';
     
 }

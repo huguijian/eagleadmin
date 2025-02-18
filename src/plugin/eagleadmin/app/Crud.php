@@ -3,6 +3,7 @@
 namespace plugin\eagleadmin\app;
 
 use plugin\eagleadmin\app\common\Auth;
+use plugin\eagleadmin\app\model\EgUser;
 use support\Db;
 use support\exception\BusinessException;
 use support\Model;
@@ -28,7 +29,7 @@ trait Crud
      *
      * @var [type]
      */
-    protected $whereArr = null;
+    protected $whereArr = [];
 
     /**
      * 自定义查询字段
@@ -90,6 +91,8 @@ trait Crud
         [$where, $pageSize, $order] = $this->selectInput($request);
         $order = $this->orderBy ?? 'id,desc';
         $model = $this->selectMap($where,$order);
+
+
         if ($this->pageSize == -1) { // 值为-1表示不分页
             $list = $model->get() ?? [];
         } else {
@@ -160,6 +163,7 @@ trait Crud
         if ($this->selectArr) {
            $model->select($this->selectArr);
         }
+
         // 搜索筛选关联信息
         if ($this->hasArr) {
             foreach($this->hasArr as $li) {
@@ -183,7 +187,9 @@ trait Crud
             }
         }
 
-        foreach ($where as $value) {
+
+        $this->whereArr = array_merge($this->whereArr,$where);
+        foreach ($this->whereArr as $value) {
             if (isset($value["opt"])) {
                 if (!empty($value["val"])) {
                     if (strtolower($value["opt"]) == 'like' || strtolower($value["opt"]) == 'not like'){
@@ -225,6 +231,7 @@ trait Crud
                 }
             }
         }
+
         return $model;
     }
 

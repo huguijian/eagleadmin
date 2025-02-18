@@ -171,15 +171,27 @@ class UserController extends BaseController
         array_push($where,
             ['field'=>'user_name','opt'=>'like','val'=>$request->get('user_name')],
             ['field'=>'phone','opt'=>'like','val'=>$request->get('phone')],
-            ['field'=>'email','opt'=>'like','val'=>$request->get('email')]
+            ['field'=>'email','opt'=>'like','val'=>$request->get('email')],
+            ['field'=>'dept_id','opt'=>'=','val'=>$request->get('dept_id')]
         );
+
+        $roleId = $request->get('role_id','');
+        if ($roleId) {
+            $userIds = EgUserRole::where('role_id',$roleId)->pluck('user_id');
+            $userIds = collect($userIds)->toArray();
+            $where[] = ['field'=>'id','opt'=>'in','val'=>$userIds];
+        }
+
+        $postId = $request->get('post_id','');
+        if ($postId) {
+            $userIds = EgUserPost::where('post_id',$postId)->pluck('user_id');
+            $userIds = collect($userIds)->toArray();
+            $where[] = ['field'=>'id','opt'=>'in','val'=>$userIds];
+        }
 
         if ($registerTime) {
             $where[] = ['field' => 'create_time', 'opt' => 'between', 'val' => [$registerTime[0], $registerTime[1]]];
         }
-
-
-        $order = $this->orderBy ?? 'id,desc';
         $model = $this->selectMap($where,$order);
         if ($this->pageSize == -1) { // 值为-1表示不分页
             $list = $model->get() ?? [];
@@ -232,5 +244,18 @@ class UserController extends BaseController
         }
 
         return $this->success([],'密码修改成功！');
+    }
+
+
+    /**
+     * 获取指定用户ID信息
+     * @param Request $request
+     * @return Response
+     */
+    public function getUserInfoByIds(Request $request)
+    {
+        $params = $request->all();
+        $res = UserLogic::getUserInfoByIds($params,$code,$msg);
+        return $this->success($res);
     }
 }

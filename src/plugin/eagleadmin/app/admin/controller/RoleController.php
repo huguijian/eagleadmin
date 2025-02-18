@@ -34,6 +34,19 @@ class RoleController extends BaseController
                 ->toArray();
             return Helper::makeTree($data);
         };
+
+        $this->whereArr = [
+            [
+                'field' => 'name',
+                'opt' => 'like',
+                'val' => $request->input('name')
+            ],
+            [
+                'field' => 'code',
+                'opt' => '=',
+                'val' => $request->input('code')
+            ]
+        ];
         return parent::select($request);
     }
 

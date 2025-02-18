@@ -3,18 +3,18 @@
 namespace plugin\eagleadmin\app\model;
 
 
-class EgDepartment extends Base
+class EgDept extends Base
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'eg_department';
+    protected $table = 'eg_dept';
 
     protected $fillable = [
         'name',
-        'order_no',
+        'sort',
         'remark',
         'parent_id',
         'status',
@@ -24,13 +24,5 @@ class EgDepartment extends Base
 
     const UPDATED_AT = 'update_time';
 
-    public function head()
-    {
-        return $this->belongsToMany(
-            EgUser::class,
-            'eg_department_head',
-            'department_id',
-            'head_id',
-        );
-    }
+
 }

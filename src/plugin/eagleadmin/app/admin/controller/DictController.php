@@ -15,4 +15,15 @@ class DictController extends BaseController
     public function __construct() {
         $this->model = new EgDict();
     }
+
+    public function select(Request $request): Response
+    {
+        $this->whereArr = [
+            ['field'=>'category_id','opt'=>'=','val'=>$request->input('category_id')],
+            ['field'=>'dict_name','opt'=>'like','val'=>$request->input('dict_name')],
+            ['field'=>'dict_value','opt'=>'like','val'=>$request->input('dict_value')],
+            ['field'=>'status','opt'=>'=','val'=>$request->input('status')],
+        ];
+        return parent::select($request);
+    }
 }

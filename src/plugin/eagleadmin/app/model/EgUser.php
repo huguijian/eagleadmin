@@ -40,7 +40,7 @@ class EgUser extends Base
 
     public function department()
     {
-        return $this->hasOne(EgDepartment::class, 'id', 'dept_id');
+        return $this->hasOne(EgDept::class, 'id', 'dept_id');
     }
 
     public function roles()

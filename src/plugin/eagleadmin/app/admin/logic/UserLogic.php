@@ -98,4 +98,17 @@ class UserLogic
         EgUser::where('id', admin_id())->update(['password' => $password]);
         return true;
     }
+
+    /**
+     * 获取指定用户ID信息
+     * @param $params
+     * @param $code
+     * @param $msg
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Collection[]|EgUser[]
+     */
+    public static function getUserInfoByIds($params,&$code,&$msg)
+    {
+        $res = EgUser::whereIn('id',$params['id'])->get();
+        return $res;
+    }
 }
