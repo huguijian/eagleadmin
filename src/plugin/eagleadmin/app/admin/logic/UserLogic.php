@@ -111,4 +111,10 @@ class UserLogic
         $res = EgUser::whereIn('id',$params['id'])->get();
         return $res;
     }
+
+
+    public static function recycle()
+    {
+
+    }
 }

@@ -9,7 +9,7 @@ use support\Db;
 
 class MenuLogic
 {
-    public function menu($search)
+    public function menu($search,$onlyTrashed=false)
     {
         $query = EgMenu::query();
         if ($search) {
@@ -21,6 +21,9 @@ class MenuLogic
             $query->select('id', Db::raw('id as value'), Db::raw('name as label'), 'parent_id');
         }
         $query->orderBy('sort', 'desc');
+        if ($onlyTrashed){
+            $query->onlyTrashed();
+        }
         $data = $query->get()
             ->toArray();
         return Helper::makeTree($data);

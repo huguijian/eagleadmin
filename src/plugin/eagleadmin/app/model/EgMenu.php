@@ -1,7 +1,7 @@
 <?php
 
 namespace plugin\eagleadmin\app\model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property int $menu_id
  * @property int $parent_id
@@ -14,6 +14,7 @@ namespace plugin\eagleadmin\app\model;
  */
 class EgMenu extends Base
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
@@ -30,5 +31,7 @@ class EgMenu extends Base
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';
+
+    const DELETED_AT = 'delete_time';
 
 }

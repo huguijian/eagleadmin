@@ -44,6 +44,12 @@ class UserController extends BaseController
         return $this->success($info);
     }
 
+    /**
+     * 添加用户
+     * @param Request $request
+     * @return Response
+     * @throws \support\exception\BusinessException
+     */
     public function insert(Request $request): Response
     {
         $params = $request->all();
@@ -104,6 +110,13 @@ class UserController extends BaseController
         return parent::info($request);
     }
 
+
+    /**
+     * 更新用户
+     * @param Request $request
+     * @return Response
+     * @throws \support\exception\BusinessException
+     */
     public function update(Request $request): Response
     {
         if ($request->method() == "POST") {
@@ -163,6 +176,12 @@ class UserController extends BaseController
         }
     }
 
+
+    /**
+     * 用户列表
+     * @param Request $request
+     * @return Response
+     */
     public function select(Request $request): Response
     {
         [$where, $pageSize, $order] = $this->selectInput($request);
@@ -208,6 +227,12 @@ class UserController extends BaseController
         return $this->success($res, 'ok');
     }
 
+
+    /**
+     * 改变状态
+     * @param Request $request
+     * @return Response
+     */
     public function changeStatus(Request $request): Response
     {
         $params = $request->all();
@@ -220,6 +245,12 @@ class UserController extends BaseController
         return $this->error('更新失败');
     }
 
+
+    /**
+     * 重置密码
+     * @param Request $request
+     * @return Response
+     */
     public function initPassword(Request $request): Response
     {
         $password = 'ssy123';
@@ -257,5 +288,84 @@ class UserController extends BaseController
         $params = $request->all();
         $res = UserLogic::getUserInfoByIds($params,$code,$msg);
         return $this->success($res);
+    }
+
+
+    /**
+     * 用户回收站
+     * @param Request $request
+     * @return Response|void
+     */
+    public function recycle(Request $request)
+    {
+        [$where, $pageSize, $order] = $this->selectInput($request);
+
+        $registerTime = $request->get('create_time');
+        array_push($where,
+            ['field'=>'user_name','opt'=>'like','val'=>$request->get('user_name')],
+            ['field'=>'phone','opt'=>'like','val'=>$request->get('phone')],
+            ['field'=>'email','opt'=>'like','val'=>$request->get('email')],
+            ['field'=>'dept_id','opt'=>'=','val'=>$request->get('dept_id')]
+        );
+
+        $roleId = $request->get('role_id','');
+        if ($roleId) {
+            $userIds = EgUserRole::where('role_id',$roleId)->pluck('user_id');
+            $userIds = collect($userIds)->toArray();
+            $where[] = ['field'=>'id','opt'=>'in','val'=>$userIds];
+        }
+
+        $postId = $request->get('post_id','');
+        if ($postId) {
+            $userIds = EgUserPost::where('post_id',$postId)->pluck('user_id');
+            $userIds = collect($userIds)->toArray();
+            $where[] = ['field'=>'id','opt'=>'in','val'=>$userIds];
+        }
+
+        if ($registerTime) {
+            $where[] = ['field' => 'create_time', 'opt' => 'between', 'val' => [$registerTime[0], $registerTime[1]]];
+        }
+        $model = $this->selectMap($where,$order);
+        $model->onlyTrashed();
+        if ($this->pageSize == -1) { // 值为-1表示不分页
+            $list = $model->get() ?? [];
+        } else {
+            $pageSize = $this->pageSize > 0 ? $this->pageSize : $pageSize;
+            $paginator = $model->paginate($pageSize);
+            $list = $paginator->items() ?? [];
+            $res['total'] = $paginator->total();
+        }
+        if ($this->callBack && is_callable($this->callBack)) {
+            $list = call_user_func($this->callBack, $list) ?? [];
+        }
+        $res['items'] = $list;
+        return $this->success($res, 'ok');
+    }
+
+
+    /**
+     * 恢复用户
+     * @param Request $request
+     * @return Response
+     */
+    public function recovery(Request $request)
+    {
+        $id = $request->input('id');
+        EgUser::whereIn('id',$id)->onlyTrashed()->restore();
+        return $this->success([]);
+    }
+
+
+    /**
+     * 销毁用户
+     * @param Request $request
+     * @return Response
+     */
+    public function realDestroy(Request $request)
+    {
+
+        $id = $request->input('id');
+        EgUser::whereIn('id',$id)->onlyTrashed()->forceDelete();
+        return $this->success([]);
     }
 }

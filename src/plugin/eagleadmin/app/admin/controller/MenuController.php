@@ -32,40 +32,62 @@ class MenuController extends BaseController
         }
         return $this->error('删除失败！');
     }
-
+    /**
+     * 添加菜单
+     * @param Request $request
+     * @return Response
+     * @throws \support\exception\BusinessException
+     */
     public function insert(Request $request):Response
     {
-        $params = $request->all();
-        $params['appid'] = request()->header('appid', 'eagleadmin');
-        $this->params = $params;
-        return parent::insert($request);
+        $data = $this->insertInput($request);
+        $data['parent_id'] = empty($data['parent_id']) ? 0 : $data['parent_id'];
+        $id   = $this->doInsert($data);
+        if ($id) {
+            return $this->success(["id"=>$id]);
+        }
+        return $this->error('保存失败!');
     }
 
     public function update(Request $request):Response
     {
-        $params = $request->all();
-        $params['appid'] = request()->header('appid', 'eagleadmin');
-        $this->params = $params;
         return parent::update($request);
     }
 
-    public function recyle()
+    /**
+     * 回收站
+     * @return Response
+     * @throws \support\exception\BusinessException
+     */
+    public function recycle()
     {
-
+        $search = $this->inputFilter(request()->all());
+        $res = (new MenuLogic())->menu($search,true);
+        return $this->success($res, '查询成功！');
     }
 
-    public function recovery()
+    /**
+     * 恢复
+     * @param Request $request
+     * @return Response
+     */
+    public function recovery(Request $request)
     {
-
+        $id = $request->input('id');
+        EgMenu::whereIn('id',$id)->restore();
+        return $this->success([], '恢复成功！');
     }
 
-    public function realDestroy()
+    /**
+     * 销毁
+     * @param Request $request
+     * @return Response
+     */
+    public function realDestroy(Request $request)
     {
-
+        $id = $request->input('id');
+        EgMenu::whereIn('id',$id)->forceDelete();
+        return $this->success([], '删除成功！');
     }
 
-    public function changeStatus()
-    {
-
-    }
 }

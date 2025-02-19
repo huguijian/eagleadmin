@@ -1,9 +1,10 @@
 <?php
 namespace plugin\eagleadmin\app\model;
 
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class EgUser extends Base
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
@@ -37,6 +38,8 @@ class EgUser extends Base
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';
+
+    const DELETED_AT = 'delete_time';
 
     public function department()
     {

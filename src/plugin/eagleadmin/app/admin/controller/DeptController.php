@@ -107,4 +107,76 @@ class DeptController extends BaseController
         }
         return $this->success([]);
     }
+
+
+    /**
+     * 部门回收站
+     * @param Request $request
+     * @return Response
+     */
+    public function recycle(Request $request)
+    {
+        $this->callBack = function($data) {
+            $data = collect($data)->map(function($item){
+                    $item['label'] = $item['name'];
+                    $item['value'] = $item['id'];
+                    return $item;
+                })
+                ->toArray();
+            return Helper::makeTree($data);
+        };
+
+        $createTime = $request->get('create_time','');
+        $this->whereArr = [
+            ['field'=>'name','opt'=>'like','val'=>$request->input('name')]
+        ];
+
+        if ($createTime) {
+            $this->whereArr = array_merge($this->whereArr,[
+                ['field'=>'create_time','opt'=>'between','val'=>[$createTime[0],$createTime[1]]]
+            ]);
+        }
+         [$where, $pageSize, $order] = $this->selectInput($request);
+        $order = $this->orderBy ?? 'id,desc';
+        $model = $this->selectMap($where,$order);
+        $model->onlyTrashed();
+        if ($this->pageSize == -1) { // 值为-1表示不分页
+            $list = $model->get() ?? [];
+        } else {
+            $pageSize = $this->pageSize > 0 ? $this->pageSize : $pageSize;
+            $paginator = $model->paginate($pageSize);
+            $list = $paginator->items() ?? [];
+            $res['total'] = $paginator->total();
+        }
+        if ($this->callBack && is_callable($this->callBack)) {
+            $list = call_user_func($this->callBack, $list) ?? [];
+        }
+        $res['items'] = $list;
+        return $this->success($res, 'ok');
+
+    }
+
+    /**
+     * 恢复部门
+     * @param Request $request
+     * @return Response
+     */
+    public function recovery(Request $request)
+    {
+        $id = $request->input('id');
+        EgDept::whereIn('id',$id)->restore();
+        return $this->success([],'恢复成功');
+    }
+
+    /**
+     * 销毁删除部门
+     * @param Request $request
+     * @return Response
+     */
+    public function realDestroy(Request $request)
+    {
+        $id = $request->input('id');
+        EgDept::whereIn('id',$id)->forceDelete();
+        return $this->success([],'删除成功');
+    }
 }

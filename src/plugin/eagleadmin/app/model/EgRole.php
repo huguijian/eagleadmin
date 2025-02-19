@@ -1,6 +1,7 @@
 <?php
 
 namespace plugin\eagleadmin\app\model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property int $role_id
  * @property string $role_name
@@ -10,6 +11,7 @@ namespace plugin\eagleadmin\app\model;
  */
 class EgRole extends Base
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
@@ -23,6 +25,12 @@ class EgRole extends Base
      * @var array
      */
     protected $casts = ['userId' => 'integer', 'roleId' => 'integer'];
+
+    const DELETED_AT = 'delete_time';
+
+    const CREATED_AT = 'create_time';
+
+    const UPDATED_AT = 'update_time';
 
     public function menus()
     {
@@ -44,8 +52,6 @@ class EgRole extends Base
         );
     }
 
-    const CREATED_AT = 'create_time';
 
-    const UPDATED_AT = 'update_time';
 
 }

@@ -1,10 +1,11 @@
 <?php
 
 namespace plugin\eagleadmin\app\model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EgPost extends Base
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
@@ -15,4 +16,6 @@ class EgPost extends Base
     const CREATED_AT = 'create_time';
 
     const UPDATED_AT = 'update_time';
+
+    const DELETED_AT = 'delete_time';
 }

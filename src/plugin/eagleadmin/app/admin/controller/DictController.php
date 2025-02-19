@@ -26,4 +26,16 @@ class DictController extends BaseController
         ];
         return parent::select($request);
     }
+
+    /**
+     * 删除成功
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request): Response
+    {
+        $id = $request->input('id');
+        EgDict::whereIn('id',$id)->forceDelete();
+        return $this->success([]);
+    }
 }
