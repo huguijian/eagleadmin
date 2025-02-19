@@ -21,7 +21,7 @@ class AdminLogic
         $userInfo = EgUser::with('department')->where('user_name', $username)->first();
         //var_dump(Db::getQueryLog());
 
-        $code = 0;
+        $code = 1;
         $msg = '登录成功';
         if (empty($userInfo)) {
             $code = -1;

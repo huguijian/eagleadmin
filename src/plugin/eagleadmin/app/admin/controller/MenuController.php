@@ -77,6 +77,7 @@ class MenuController extends BaseController
         EgMenu::whereIn('id',$id)->restore();
         return $this->success([], '恢复成功！');
     }
+    
 
     /**
      * 销毁
