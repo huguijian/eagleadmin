@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\controller;
+namespace plugin\eagleadmin\app\controller;
 
 use plugin\eagleadmin\app\BaseController;
 use support\Request;

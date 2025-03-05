@@ -36,4 +36,11 @@ class AttachmentController extends BaseController
         $info = $this->attachmentLogic->where('id',$id)->first();
         return response()->download(public_path($info['path']));
     }
+
+    public function delete(Request $request)
+    {
+        $res = $this->attachmentLogic->delete($request);
+        return $this->success($res);
+    }
+
 }

@@ -5,11 +5,10 @@ use plugin\eagleadmin\app\model\EgDictCategory;
 
 class DictCategoryLogic extends ILogic
 {
-    private $egDictCategory;
     public function __construct()
     {
 
-        $this->egDictCategory = new EgDictCategory();
+        $this->model = new EgDictCategory();
     }
 
 
