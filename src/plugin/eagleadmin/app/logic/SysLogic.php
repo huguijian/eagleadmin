@@ -1,23 +1,24 @@
 <?php
+namespace plugin\eagleadmin\app\logic;
 
-namespace plugin\eagleadmin\app\admin\controller;
-use plugin\eagleadmin\app\model\EgOperateLog;
-use support\Request;
-use support\Response;
-use plugin\eagleadmin\app\BaseController;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgLoginLog;
-
-class SysController extends BaseController
+use plugin\eagleadmin\app\model\EgOperateLog;
+class SysLogic extends ILogic
 {
-    protected $noNeedAuth = ['loginLog', 'sysLog'];
-
+    private $egOperateLog;
+    public function __construct()
+    {
+        $this->model = new EgLoginLog();
+        $this->egOperateLog = new EgOperateLog();
+    }
 
     /**
-     * 登录日志
-     * @param Request $request
-     * @return Response
+     * 日志列表 
+     * @param mixed $request
+     * @return array
      */
-    public function loginLog(Request $request)
+    public function loginLog($request)
     {
         $id = $request->input('id');
         if ($id) {
@@ -28,25 +29,17 @@ class SysController extends BaseController
         $this->whereArr = [
             ['field'=>'user_name','opt'=>'like','val'=>$request->input('user_name')],
             ['field'=>'ip','opt'=>'like','val'=>$request->input('ip')],
-            ['field'=>'status','opt'=>'=','val'=>$request->input('status')],
+            ['field'=>'status','opt'=>'=','val'=>$request->input('status')]
         ];
-
         if ($loginTime) {
             $this->whereArr[] = ['field'=>'login_time','opt'=>'between','val'=>[$loginTime[0]??'',$loginTime[1]??'']];
         }
-        $this->model = new EgLoginLog();
         return parent::select($request);
     }
 
-
-    /**
-     * 操作日志
-     * @param Request $request
-     * @return Response
-     */
-    public function sysLog(Request $request)
+    public function sysLog($request)
     {
-        $this->model = new EgOperateLog();
+        $this->model = $this->egOperateLog; 
         $createTime = $request->input('create_time','');
         $this->whereArr = [
             ['field'=>'user_name','opt'=>'like','val'=>$request->input('user_name')],
@@ -61,28 +54,26 @@ class SysController extends BaseController
         return parent::select($request);
     }
 
-
     /**
      * 删除登录日志
-     * @param Request $request
-     * @return Response
+     * @param mixed $id
+     * @return bool
      */
-    public function deleteLoginLog(Request $request)
+    public function deleteUserLog($id)
     {
-        $id = $request->input('id');
-        EgLoginLog::whereIn('id',$id)->delete();
-        return $this->success([]);
+        $this->model->whereIn('id',$id)->delete();
+        return true;
     }
+
 
     /**
      * 删除操作日志
-     * @param Request $request
-     * @return Response
+     * @param mixed $id
+     * @return bool
      */
-    public function deleteOperLog(Request $request)
+    public function deleteOperLog($id)
     {
-        $id = $request->input('id');
-        EgOperateLog::whereIn('id',$id)->delete();
-        return $this->success([]);
+        $this->egOperateLog->whereIn('id',$id)->delete();
+        return true;
     }
 }

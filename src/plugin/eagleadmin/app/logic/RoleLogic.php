@@ -1,34 +1,18 @@
 <?php
+namespace plugin\eagleadmin\app\logic;
 
-namespace plugin\eagleadmin\app\admin\controller;
-
-use plugin\eagleadmin\app\BaseController;
-use support\Request;
 use support\Db;
-use support\Response;
-use plugin\eagleadmin\app\admin\logic\UserLogic;
-use plugin\eagleadmin\app\model\EgDepartment;
 use plugin\eagleadmin\app\model\EgRole;
-use plugin\eagleadmin\app\model\EgRoleMenu;
-use plugin\eagleadmin\app\UploadValidator;
-use plugin\eagleadmin\app\service\CommonService;
-use plugin\eagleadmin\app\model\EgUser;
 use plugin\eagleadmin\utils\Helper;
-
-class RoleController extends BaseController
+use plugin\eagleadmin\app\model\EgRoleMenu;
+class RoleLogic extends ILogic
 {
-    protected $model;
-
-    public function __construct() {
+    public function __construct()
+    {
         $this->model = new EgRole();
     }
 
-    /**
-     * 角色列表
-     * @param Request $request
-     * @return Response
-     */
-    public function select(Request $request) :Response
+    public function select($request) 
     {
         $this->callBack = function($data) {
             $data = collect($data)->map(function($item){
@@ -52,24 +36,18 @@ class RoleController extends BaseController
                 'val' => $request->input('code')
             ]
         ];
-
         return parent::select($request);
     }
 
-
-    /**
-     * 通过角色获取菜单
-     * @return Response
-     */
     public function getMenuByRole()
     {
         $id = request()->input('id');
         $role = EgRole::where('id', $id)->first();
         $menus = $role['menus'] ?? [];
-        return $this->success([
+        return [
             'id' => $id,
             'menus' => $menus,
-        ]);
+        ];
     }
 
     public function getDeptByRole()
@@ -77,10 +55,10 @@ class RoleController extends BaseController
         $id = request()->input('id');
         $role = EgRole::where('id', $id)->first();
         $depts = $role['depts'] ?? [];
-        return $this->success([
+        return [
             'id' => $id,
             'depts' => $depts,
-        ]);
+        ];
     }
 
     public function updateMenuPermission($id)
@@ -103,7 +81,7 @@ class RoleController extends BaseController
             Db::rollBack();
             throw $e;
         }
-        return $this->success([], '保存成功！');
+        return true;
     }
 
     public function updateDataPermission($id)
@@ -117,16 +95,16 @@ class RoleController extends BaseController
             Db::rollBack();
             throw $e;
         }
-        return $this->success([], '保存成功！');
+        return true;
     }
 
 
-    /**
-     * 角色回收站
-     * @param Request $request
-     * @return Response
-     */
-    public function recycle(Request $request)
+    public function update($request)
+    {
+        return parent::update($request);
+    }
+
+    public function recycle($request)
     {
             $this->callBack = function($data) {
             $data = collect($data)->map(function($item){
@@ -169,31 +147,6 @@ class RoleController extends BaseController
             $list = call_user_func($this->callBack, $list) ?? [];
         }
         $res['items'] = $list;
-        return $this->success($res, 'ok');
-    }
-
-
-    /**
-     * 恢复角色
-     * @param Request $request
-     * @return Response
-     */
-    public function recovery(Request $request)
-    {
-        $id = $request->input('id');
-        EgRole::whereIn('id',$id)->restore();
-        return $this->success([],'恢复成功');
-    }
-
-    /**
-     * 销毁角色
-     * @param Request $request
-     * @return Response
-     */
-    public function realDestroy(Request $request)
-    {
-        $id = $request->input('id');
-        EgRole::whereIn('id',$id)->forceDelete();
-        return $this->success([]);
+        return $res;
     }
 }

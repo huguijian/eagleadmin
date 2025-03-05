@@ -3,12 +3,10 @@
 namespace plugin\eagleadmin\app;
 
 use plugin\eagleadmin\app\common\Auth;
-use plugin\eagleadmin\app\model\EgUser;
 use support\Db;
 use support\exception\BusinessException;
 use support\Model;
 use support\Request;
-use support\Response;
 
 trait Crud
 {
@@ -81,18 +79,17 @@ trait Crud
     protected $orderBy = null;
 
     /**
-     * 查询
-     *
-     * @param Request $request
-     * @return \support\Response
+     * 查询 
+     * @param \support\Request $request
+     * @return array
      */
-    public function select(Request $request):Response
+    public function select(Request $request)    
     {
         [$where, $pageSize, $order] = $this->selectInput($request);
         $order = $this->orderBy ?? 'id,desc';
         $model = $this->selectMap($where,$order);
 
-
+        $res = ['items' => [], 'total' => 0]; 
         if ($this->pageSize == -1) { // 值为-1表示不分页
             $list = $model->get() ?? [];
         } else {
@@ -105,24 +102,18 @@ trait Crud
             $list = call_user_func($this->callBack, $list) ?? [];
         }
         $res['items'] = $list;
-        return $this->success($res, 'ok');
+        $res = collect($res)->toArray();
+        return $res;
     }
 
     /**
      * 获取详情
      * @param Request $request
-     * @param $model
-     * @return Response
      * @throws BusinessException
      */
-    public function info(Request $request,$model=null): Response
+    public function info(Request $request) 
     {
-        if (is_null($model)) {
-            $model = $this->model->query();
-        }else{
-            $model = $model->query();
-        }
-
+        $model = $this->model->query();
         $primary_key = $model->getModel()->getKeyName();
 
         // with条件
@@ -138,7 +129,7 @@ trait Crud
         if ($this->callBack && is_callable($this->callBack)) {
             $info = call_user_func($this->callBack,$info);
         }
-        return $this->success(["row"=>$info]);
+        return ['row'=>$info];
     }
 
     /**
@@ -148,13 +139,9 @@ trait Crud
      * @param string $order
      * @return mixed
      */
-    public function selectMap(array $where, string $order= '',object $model=null)
+    public function selectMap(array $where, string $order= '')
     {
-        if (is_null($model)) {
-            $model = $this->model->query();
-        }else{
-            $model = $model->query();
-        }
+        $model = $this->model->query();
         // with条件
         if ($this->withArr) {
             $model->with($this->withArr);
@@ -237,18 +224,15 @@ trait Crud
 
     /**
      * 新增数据
-     * @param Request $request
-     * @return Response
-     * @throws BusinessException
      */
-    public function insert(Request $request):Response
+    public function insert(Request $request)
     {
         $data = $this->insertInput($request);
         $id   = $this->doInsert($data);
         if ($id) {
-            return $this->success(["id"=>$id]);
+            return ["id"=>$id];
         }
-        return $this->error('保存失败!');
+        return false;
     }
 
     /**
@@ -266,24 +250,19 @@ trait Crud
      * @param array $data
      * @return mixed|null
      */
-    protected function doInsert(array $data,object $model=null)
+    protected function doInsert(array $data)
     {
-        if (is_null($model)) {
-            $model = $this->model;
-        }
-        $primary_key = $model->getKeyName();
-        $model_class = get_class($model);
-        $model = new $model_class;
-
+        
+        $primary_key = $this->model->getKeyName();
         if ($this->callBack && is_callable($this->callBack)) {
             $data = call_user_func($this->callBack,$data);
         }
 
         foreach ($data as $key => $val) {
-            $model->{$key} = $val;
+            $this->model->{$key} = $val;
         }
-        $model->save();
-        return $primary_key ? $model->$primary_key : null;
+        $this->model->save();
+        return $primary_key ? $this->model->$primary_key : null;
     }
 
     /**
@@ -292,17 +271,13 @@ trait Crud
      * @return array
      * @throws BusinessException
      */
-    public function inputFilter(array $data=[],$model=null):array
+    public function inputFilter(array $data=[]):array
     {
         if ($this->params) {
             $data = array_merge($data, $this->params);
         }
 
-        if (is_null($model)) {
-            $table = $this->model->getTable();
-        }else{
-            $table = $model->getTable();
-        }
+        $table = $this->model->getTable();
         $allow_column = Db::select("desc `$table`");
         if (!$allow_column) {
             throw new BusinessException('表不存在', 2);
@@ -327,22 +302,23 @@ trait Crud
         return $data;
     }
 
+  
     /**
+     * 
      * 更新数据
-     * @param Request $request
-     * @return Response
-     * @throws BusinessException
+     * @param mixed $request
+     * @throws \support\exception\BusinessException
+     * @return array{row: mixed|bool}
      */
-    public function update(Request $request): Response
+    public function update($request)
     {
         if ($request->method() == "POST") {
             [$id, $data] = $this->updateInput($request);
-
-            $res = $this->doUpdate($id, $data);
-            if ($res) {
-                return $this->success([]);
+            // 调用doUpdate方法并检查返回值是否为true
+            if (!$this->doUpdate($id, $data)) {
+                throw new BusinessException('更新失败');
             }
-            return $this->error('更新失败!');
+            return true;
         } else {
             $model = $this->model;
             // with条件
@@ -359,7 +335,7 @@ trait Crud
                 $info = call_user_func($this->callBack, $info);
             }
 
-            return $this->success(["row" => $info]);
+            return ["row"=>$info];
         }
     }
 
@@ -369,14 +345,12 @@ trait Crud
      * @return array
      * @throws BusinessException
      */
-    protected function updateInput(Request $request,object $model=null): array
+    protected function updateInput(Request $request): array
     {
-        if (is_null($model)) {
-            $model = $this->model;
-        }
+        $model = $this->model;
         $primary_key = $model->getKeyName();
         $id   = $request->post($primary_key);
-        $data = $this->inputFilter($request->post(),$model);
+        $data = $this->inputFilter($request->post());
         unset($data[$primary_key]);
         return [$id, $data];
     }
@@ -388,40 +362,32 @@ trait Crud
      * @return void
      * @throws BusinessException
      */
-    protected function doUpdate($id, $data, $model=null)
+    protected function doUpdate($id, $data)
     {
-        if (is_null($model)) {
-            $model = $this->model;
-        }
-        $model = $model->find($id);
-        if (!$model) {
+        $model = $this->model;
+        $record = $model->find($id);
+        if (!$record) {
             throw new BusinessException('记录不存在', 2);
         }
-
         if ($this->callBack && is_callable($this->callBack)) {
             $data = call_user_func($this->callBack, $data);
         }
 
         foreach ($data as $key => $val) {
-            $model->{$key} = $val;
+            $record->{$key} = $val;
         }
-        return $model->save();
+        return $record->save();
     }
 
     /**
      * @param Request $request
-     * @return Response
      * @throws BusinessException
      */
-    public function delete(Request $request): Response
+    public function delete(Request $request) 
     {
         $ids = $this->deleteInput($request);
         $res = $this->doDelete($ids);
-        if ($res) {
-            return $this->success([]);
-        } else {
-            return $this->error('删除失败!');
-        }
+        return $res;
     }
 
     /**
@@ -444,7 +410,7 @@ trait Crud
      * @param array $ids
      * @return void
      */
-    protected function doDelete(array $ids)
+    protected function doDelete(array $ids):int
     {
         if (!$ids) {
             throw new BusinessException("ID值不能为空!");
@@ -453,105 +419,7 @@ trait Crud
         return $this->model->whereIn($primary_key, $ids)->delete();
     }
 
-    /**
-     * 摘要
-     * @param Request $request
-     * @return \support\Response
-     * @throws \Support\Exception\BusinessException
-     */
-    public function schema(Request $request,object $model=null)
-    {
-        if (is_null($model)) {
-            $table = $this->model->getTable();
-        }else{
-            $table = $model->getTable();
-        }
-
-        Util::checkTableName($table);
-        $schema = Option::where('name', "table_form_schema_$table")->value('value');
-        $form_schema_map = $schema ? json_decode($schema, true) : [];
-
-        $data = $this->getSchema($table);
-        foreach ($data['forms'] as $field => $item) {
-            if (isset($form_schema_map[$field])) {
-                $data['forms'][$field] = $form_schema_map[$field];
-            }
-        }
-
-        return $this->json(0, 'ok', [
-            'table' => $data['table'],
-            'columns' => array_values($data['columns']),
-            'forms' => array_values($data['forms']),
-            'keys' => array_values($data['keys']),
-        ]);
-    }
-
-    /**
-     * 按表获取摘要
-     *
-     * @param $table
-     * @param $section
-     * @return array|mixed
-     */
-    protected function getSchema($table, $section = null)
-    {
-        $database = config('database.connections')['plugin.admin.mysql']['database'];
-        $schema_raw = $section !== 'table' ? Util::db()->select("select * from information_schema.COLUMNS where TABLE_SCHEMA = '$database' and table_name = '$table'") : [];
-        $forms = [];
-        $columns = [];
-        foreach ($schema_raw as $item) {
-            $field = $item->COLUMN_NAME;
-            $columns[$field] = [
-                'field' => $field,
-                'type' => Util::typeToMethod($item->DATA_TYPE, (bool)strpos($item->COLUMN_TYPE, 'unsigned')),
-                'comment' => $item->COLUMN_COMMENT,
-                'default' => $item->COLUMN_DEFAULT,
-                'length' => $this->getLengthValue($item),
-                'nullable' => $item->IS_NULLABLE !== 'NO',
-                'primary_key' => $item->COLUMN_KEY === 'PRI',
-                'auto_increment' => strpos($item->EXTRA, 'auto_increment') !== false
-            ];
-
-            $forms[$field] = [
-                'field' => $field,
-                'comment' => $item->COLUMN_COMMENT,
-                'control' => Util::typeToControl($item->DATA_TYPE),
-                'form_show' => $item->COLUMN_KEY !== 'PRI',
-                'list_show' => true,
-                'enable_sort' => false,
-                'readonly' => $item->COLUMN_KEY === 'PRI',
-                'searchable' => false,
-                'search_type' => 'normal',
-                'control_args' => '',
-            ];
-        }
-        $table_schema = $section == 'table' || !$section ? Util::db()->select("SELECT TABLE_COMMENT FROM  information_schema.`TABLES` WHERE  TABLE_SCHEMA='$database' and TABLE_NAME='$table'") : [];
-        $indexes = $section == 'keys' || !$section ? Util::db()->select("SHOW INDEX FROM `$table`") : [];
-        $keys = [];
-        foreach ($indexes as $index) {
-            $key_name = $index->Key_name;
-            if ($key_name == 'PRIMARY') {
-                continue;
-            }
-            if (!isset($keys[$key_name])) {
-                $keys[$key_name] = [
-                    'name' => $key_name,
-                    'columns' => [],
-                    'type' => $index->Non_unique == 0 ? 'unique' : 'normal'
-                ];
-            }
-            $keys[$key_name]['columns'][] = $index->Column_name;
-        }
-
-        $data = [
-            'table' => ['name' => $table, 'comment' => $table_schema[0]->TABLE_COMMENT ?? ''],
-            'columns' => $columns,
-            'forms' => $forms,
-            'keys' => array_reverse($keys, true)
-        ];
-        return $section ? $data[$section] : $data;
-    }
-
+ 
     protected function getLengthValue($schema)
     {
         $type = $schema->DATA_TYPE;
@@ -576,18 +444,12 @@ trait Crud
      * @param Request $request
      * @return array|\support\Response
      */
-    protected function selectInput(Request $request, $model=null)
+    protected function selectInput(Request $request)
     {
         $order = $request->get('order', 'id,desc');
         $page_size = $request->get('limit', 10);
         $this->pageSize = $page_size;
-        if (is_null($model)) {
-            $table = $this->model->getTable();
-        }else{
-            $table = $model->getTable();
-        }
-
-
+        $table = $this->model->getTable();
         $allow_column = Db::select("desc `$table`");
         if (!$allow_column) {
             return $this->json(2, '表不存在');
@@ -606,10 +468,5 @@ trait Crud
         }
 
         return [$where, $page_size, $order];
-    }
-
-    protected function json(int $code, string $msg = 'ok', array $data = [])
-    {
-        return json(['code' => $code, 'result' => $data, 'message' => $msg, 'type' => $code ? 'error' : 'success']);
     }
 }

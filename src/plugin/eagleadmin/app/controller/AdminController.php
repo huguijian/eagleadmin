@@ -1,17 +1,13 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\controller;
+namespace plugin\eagleadmin\app\controller;
 
-use exception\BusinessException;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
-use jwt\JwtInstance;
-use plugin\eagleadmin\app\admin\logic\AdminLogic;
-use plugin\eagleadmin\app\admin\validate\AdminValidate;
+use plugin\eagleadmin\app\logic\AdminLogic;
+use plugin\eagleadmin\app\validate\AdminValidate;
 use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgAttachment;
-use plugin\eagleadmin\app\model\EmsAttachment;
-use plugin\eagleadmin\app\model\EmsMenu;
 use plugin\eagleadmin\app\service\CommonService;
 use plugin\eagleadmin\app\UploadValidator;
 use support\Redis;
@@ -28,16 +24,23 @@ class AdminController extends BaseController
      */
     protected $noNeedLogin = ['login', 'refresh','getCaptcha'];
 
+    private $adminLogic;
+    public function __construct()
+    {
+        $this->adminLogic = new AdminLogic();
+    }
     /**
      * 用户登录
-     * @log(用户登录)
-     * @throws \app\exception\BusinessException|\support\exception\BusinessException
+     * @param \support\Request $request
+     * @return \support\Response
      */
     public function login(Request $request): \support\Response
     {
         $params = (new AdminValidate())->isPost()->validate();
-        $isLogin = AdminLogic::login($params,$data,$code,$msg);
-
+        $code = 0; // 初始化状态码
+        $msg = ''; // 初始化提示信息
+        $data = []; // 初始化返回数据
+        $isLogin = $this->adminLogic->login($params, $data, $code, $msg);
         //登录事件
         Event::dispatch('user.login', [
             'user_name' => $params['username'],
@@ -48,6 +51,7 @@ class AdminController extends BaseController
         if (!$isLogin) {
             return $this->error($msg);
         }
+
         return $this->success([
             'userInfo' => $data,
             'routePath' => '/admin',
@@ -65,7 +69,7 @@ class AdminController extends BaseController
 
     /**
      * 获取验证码
-     * @return \think\response\Json
+     * @param \support\Request $request
      */
     public function getCaptcha(Request $request)
     {
@@ -80,12 +84,11 @@ class AdminController extends BaseController
         return $this->success(["base64"=>$builder->inline(),"key"=>$captchaId]);
     }
 
-    /**
-     * 文件资源上传
-     * @throws BusinessException
-     * @throws \app\exception\BusinessException
-     */
-    public function upload(Request $request)
+     /**
+      * 文件上传
+      * @param \support\Request $request
+      */
+     public function upload(Request $request)
     {
         $params = $request->all();
         $params['file']  = $request->file('file');

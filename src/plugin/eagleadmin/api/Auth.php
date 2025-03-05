@@ -3,11 +3,10 @@ namespace plugin\eagleadmin\api;
 
 
 use plugin\eagleadmin\app\model\EgRole;
-use plugin\eagleadmin\app\model\EgMenu;
 use plugin\eagleadmin\app\model\EgUserRole;
 use support\exception\BusinessException;
 use \Tinywan\Jwt\JwtToken;
-use plugin\eagleadmin\app\admin\logic\UserLogic;
+use plugin\eagleadmin\app\logic\UserLogic;
 
 /**
  * 对外提供的鉴权接口

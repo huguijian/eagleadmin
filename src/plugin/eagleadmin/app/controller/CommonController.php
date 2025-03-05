@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\controller;
+namespace plugin\eagleadmin\app\controller;
 
 use plugin\eagleadmin\app\BaseController;
 use support\Request;
@@ -11,8 +11,6 @@ class CommonController extends BaseController
 {
     /**
      * 文件资源上传
-     * @throws BusinessException
-     * @throws \app\exception\BusinessException
      */
     public function upload(Request $request)
     {
@@ -25,6 +23,7 @@ class CommonController extends BaseController
             'type' => $params['type'] ?? '',
         ]);
         $fileInfo = (new CommonService())->upload($params,$params['app']??'');
+        $fileInfo = collect($fileInfo)->toArray();
         if ($fileInfo) {
             return $this->success($fileInfo, '上传成功!');
         }

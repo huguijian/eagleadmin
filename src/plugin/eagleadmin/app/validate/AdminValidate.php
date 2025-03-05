@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\validate;
+namespace plugin\eagleadmin\app\validate;
 use plugin\eagleadmin\app\BaseValidate;
 class AdminValidate extends BaseValidate
 {

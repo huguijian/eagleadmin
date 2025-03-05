@@ -1,8 +1,8 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\controller;
+namespace plugin\eagleadmin\app\controller;
 
-use plugin\eagleadmin\app\admin\logic\MenuLogic;
+use plugin\eagleadmin\app\logic\MenuLogic;
 use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgMenu;
 use support\Request;
@@ -10,16 +10,16 @@ use support\Response;
 
 class MenuController extends BaseController
 {
-    protected $model;
 
-    public function __construct() {
-        $this->model = new EgMenu();
+    private $menuLogic;
+    public function __construct() 
+    {
+        $this->menuLogic = new MenuLogic();
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $search = $this->inputFilter(request()->all());
-        $res = (new MenuLogic())->menu($search);
+        $res = $this->menuLogic->menu($request);
         return $this->success($res, '查询成功！');
     }
 
@@ -38,20 +38,16 @@ class MenuController extends BaseController
      * @return Response
      * @throws \support\exception\BusinessException
      */
-    public function insert(Request $request):Response
+    public function insert(Request $request)
     {
-        $data = $this->insertInput($request);
-        $data['parent_id'] = empty($data['parent_id']) ? 0 : $data['parent_id'];
-        $id   = $this->doInsert($data);
-        if ($id) {
-            return $this->success(["id"=>$id]);
-        }
-        return $this->error('保存失败!');
+        $res = $this->menuLogic->insert($request);
+        return $this->success($res, '添加成功！');
     }
 
     public function update(Request $request):Response
     {
-        return parent::update($request);
+        $res = $this->menuLogic->update($request);
+        return $this->success($res,'修改成功！');
     }
 
     /**
@@ -59,10 +55,9 @@ class MenuController extends BaseController
      * @return Response
      * @throws \support\exception\BusinessException
      */
-    public function recycle()
+    public function recycle(Request $request)
     {
-        $search = $this->inputFilter(request()->all());
-        $res = (new MenuLogic())->menu($search,true);
+        $res = $this->menuLogic->menu($request,true);
         return $this->success($res, '查询成功！');
     }
 
@@ -74,7 +69,7 @@ class MenuController extends BaseController
     public function recovery(Request $request)
     {
         $id = $request->input('id');
-        EgMenu::whereIn('id',$id)->restore();
+        $this->menuLogic->whereIn('id',$id)->restore();
         return $this->success([], '恢复成功！');
     }
     
@@ -87,7 +82,7 @@ class MenuController extends BaseController
     public function realDestroy(Request $request)
     {
         $id = $request->input('id');
-        EgMenu::whereIn('id',$id)->forceDelete();
+        $this->menuLogic->whereIn('id',$id)->forceDelete();
         return $this->success([], '删除成功！');
     }
 

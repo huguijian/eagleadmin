@@ -7,7 +7,6 @@ namespace plugin\eagleadmin\app;
  */
 class BaseController
 {
-    use Crud;
     /**
      * success
      * 成功返回请求结果

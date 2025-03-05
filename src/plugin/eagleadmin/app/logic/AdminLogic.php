@@ -1,15 +1,14 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\logic;
+namespace plugin\eagleadmin\app\logic;
 
+use Plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgUser;
-use support\Redis;
 use Tinywan\Jwt\JwtToken;
-use Webman\Event\Event;
 
-class AdminLogic
+class AdminLogic extends ILogic
 {
-    public static function login($params,&$data,&$code,&$msg): bool
+    public function login($params,&$data,&$code,&$msg): bool
     {
 
         $username  = $params["username"]??"";
@@ -64,6 +63,7 @@ class AdminLogic
         //        if (strtolower($verifyCode)!=strtolower($tmp)) {
         //            throw new BusinessException("验证码错误",[],500);
         //        }
+
         $token = JwtToken::generateToken([
             'id' => $userInfo['id'],
             'user_name' => $userInfo['user_name'],
@@ -98,7 +98,7 @@ class AdminLogic
      * @param $level
      * @return array
      */
-    public static function getTreeRole($data, $pid = 0, $level = 0)
+    public function getTreeRole($data, $pid = 0, $level = 0)
     {
         $newArr = [];
         foreach ($data as $item) {
@@ -118,7 +118,7 @@ class AdminLogic
      * @param int $level
      * @return array
      */
-    public static function getTreeMenuNormal($data, $pid = 0, $level = 0)
+    public function getTreeMenuNormal($data, $pid = 0, $level = 0)
     {
         $newArr = [];
         foreach ($data as $item) {

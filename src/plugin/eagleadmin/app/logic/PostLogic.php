@@ -1,25 +1,16 @@
 <?php
+namespace plugin\eagleadmin\app\logic;
 
-namespace plugin\eagleadmin\app\admin\controller;
-
-use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgPost;
-use support\Request;
-use support\Db;
-use support\Response;
 
-/**
- * 岗位管理
- */
-class PostController extends BaseController
+class PostLogic extends ILogic
 {
-    protected $model;
-
-    public function __construct() {
+    public function __construct()
+    {
         $this->model = new EgPost();
     }
 
-    public function select(Request $request): Response
+    public function select($request) 
     {
         $createTime = $request->input('create_time');
         $this->whereArr = [
@@ -33,12 +24,7 @@ class PostController extends BaseController
         return parent::select($request);
     }
 
-    /**
-     * 回收站
-     * @param Request $request
-     * @return Response
-     */
-    public function recycle(Request $request)
+    public function recycle($request)
     {
         $createTime = $request->input('create_time');
         $this->whereArr = [
@@ -65,30 +51,6 @@ class PostController extends BaseController
             $list = call_user_func($this->callBack, $list) ?? [];
         }
         $res['items'] = $list;
-        return $this->success($res, 'ok');
-    }
-
-    /**
-     * 恢复
-     * @param Request $request
-     * @return Response
-     */
-    public function recovery(Request $request)
-    {
-        $id = $request->input('id');
-        EgPost::whereIn('id',$id)->restore();
-        return $this->success([],'ok');
-    }
-
-    /**
-     * 销毁
-     * @param Request $request
-     * @return Response
-     */
-    public function realDestroy(Request $request)
-    {
-        $id = $request->input('id');
-        EgPost::whereIn('id',$id)->forceDelete();
-        return $this->success([],'ok');
+        return $res;
     }
 }

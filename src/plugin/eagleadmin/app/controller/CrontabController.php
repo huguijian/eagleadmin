@@ -1,34 +1,28 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\controller;
-
+namespace plugin\eagleadmin\app\controller;
 use plugin\eagleadmin\app\BaseController;
 use support\Request;
 use plugin\eagleadmin\app\model\EgCrontab;
 use plugin\eagleadmin\app\model\EgCrontabLog;
-use plugin\eagleadmin\app\admin\logic\CrontabLogic;
+use plugin\eagleadmin\app\logic\CrontabLogic;
 use support\Response;
 class CrontabController extends BaseController
 {
-    protected $model;
 
+    private $cronLogic;
     public function __construct()
     {
-        $this->model = new EgCrontab();
+        $this->cronLogic = new CrontabLogic();
     }
-
 
     /**
      * 查询
      */ 
     public function select(Request $request):Response
     {
-        $this->whereArr = [
-            ['opt'=>'=','field'=>'status','val'=>$request->get('status')],
-            ['opt'=>'like','field'=>'name','val'=>$request->get('name')],
-            ['opt'=>'=','field'=>'type','val'=>$request->get('type')]
-        ];
-        return parent::select($request);
+        $res = $this->cronLogic->select($request);
+        return $this->success($res);
     }
 
     /**
@@ -48,22 +42,7 @@ class CrontabController extends BaseController
      */ 
     public function logPageList(Request $request):Response
     {
-        $this->model = new EgCrontabLog();
-        [$where, $pageSize, $order] = $this->selectInput($request);
-        $order = $this->orderBy ?? 'id,desc';
-        $this->whereArr = [
-            ['opt'=>'=','field'=>'crontab_id','val'=>$request->get('crontab_id')]
-        ];
-        $model = $this->selectMap($where,$order);
-        if ($this->pageSize == -1) { // 值为-1表示不分页
-            $list = $model->get() ?? [];
-        } else {
-            $pageSize = $this->pageSize > 0 ? $this->pageSize : $pageSize;
-            $paginator = $model->paginate($pageSize);
-            $list = $paginator->items() ?? [];
-            $res['total'] = $paginator->total();
-        }
-        $res['items'] = $list;
+        $res = $this->cronLogic->logPageList($request);
         return $this->success($res, 'ok');
     }
 
@@ -84,7 +63,8 @@ class CrontabController extends BaseController
      */
     public function save(Request $request):Response
     {
-        return parent::insert($request);
+        $this->cronLogic->insert($request);
+        return $this->success([],'');
     }
 
 
@@ -93,7 +73,8 @@ class CrontabController extends BaseController
      */
     public function destroy(Request $request):Response
     {
-        return parent::delete($request);
+        $this->cronLogic->delete($request);
+        return $this->success([],'');
     }
     
     /**
@@ -103,6 +84,9 @@ class CrontabController extends BaseController
     {
         $id = $request->input('id');
         $res = CrontabLogic::run($id);
-        return $this->success($res, '执行成功！');
+        if ($res) {
+            return $this->success([],'执行成功！');
+        }
+        return $this->error('执行失败!');
     }
 }

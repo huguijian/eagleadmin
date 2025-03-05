@@ -1,23 +1,19 @@
 <?php
+namespace plugin\eagleadmin\app\logic;
 
-namespace plugin\eagleadmin\app\admin\controller;
-
-use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgDept;
 use plugin\eagleadmin\app\model\EgDeptLeader;
-use support\Request;
-use support\Response;
 use plugin\eagleadmin\utils\Helper;
-
-class DeptController extends BaseController
+class DeptLogic extends ILogic
 {
-    protected $model;
-
-    public function __construct() {
+    private $egDeptLeader;
+    public function __construct()
+    {
         $this->model = new EgDept();
+        $this->egDeptLeader = new EgDeptLeader();
     }
 
-    public function select(Request $request) :Response
+    public function select($request) 
     {
         $this->callBack = function($data) {
             $data = collect($data)->map(function($item){
@@ -42,15 +38,9 @@ class DeptController extends BaseController
         return parent::select($request);
     }
 
-
-    /**
-     * 领导列表
-     * @param Request $request
-     * @return Response
-     */
-    public function leaders(Request $request)
+    public function leaders($request)
     {
-        $this->model = new EgDeptLeader();
+        $this->model = $this->egDeptLeader;
         $this->withArr = ['userInfo'];
         [$where, $pageSize, $order] = $this->selectInput($request);
         $order = $this->orderBy ?? 'id,desc';
@@ -69,34 +59,24 @@ class DeptController extends BaseController
             $list = call_user_func($this->callBack, $list) ?? [];
         }
         $res['items'] = $list;
-        return $this->success($res, 'ok');
+        return $res;
     }
 
 
-    /**
-     * 删除领导列表
-     * @param Request $request
-     * @return Response
-     */
-    public function delLeader(Request $request)
+    public function delLeader($request,&$msg)
     {
         $ids = $request->input('id');
         $ids = is_array($ids) ? $ids : explode(',', $ids);
         $ids = array_filter($ids);
         if (empty($ids)) {
-            return $this->error('参数错误');
+            $msg = '参数错误';
+            return false;
         }
-        $res = EgDeptLeader::whereIn('id', $ids)->delete();
-        return $this->success($res, '删除成功');
+        EgDeptLeader::whereIn('id', $ids)->delete();
+        return true;
     }
 
-
-    /**
-     * 添加部门领导
-     * @param Request $request
-     * @return Response
-     */
-    public function addLeader(Request $request)
+    public function addLeader($request)
     {
         $params = $request->all();
         foreach ($params['users'] as $item) {
@@ -105,16 +85,10 @@ class DeptController extends BaseController
                 'user_id' => $item['user_id'],
             ]);
         }
-        return $this->success([]);
+        return true;
     }
 
-
-    /**
-     * 部门回收站
-     * @param Request $request
-     * @return Response
-     */
-    public function recycle(Request $request)
+    public function recycle($request)
     {
         $this->callBack = function($data) {
             $data = collect($data)->map(function($item){
@@ -136,7 +110,7 @@ class DeptController extends BaseController
                 ['field'=>'create_time','opt'=>'between','val'=>[$createTime[0],$createTime[1]]]
             ]);
         }
-         [$where, $pageSize, $order] = $this->selectInput($request);
+        [$where, $pageSize, $order] = $this->selectInput($request);
         $order = $this->orderBy ?? 'id,desc';
         $model = $this->selectMap($where,$order);
         $model->onlyTrashed();
@@ -152,31 +126,8 @@ class DeptController extends BaseController
             $list = call_user_func($this->callBack, $list) ?? [];
         }
         $res['items'] = $list;
-        return $this->success($res, 'ok');
-
+        return $res;
     }
 
-    /**
-     * 恢复部门
-     * @param Request $request
-     * @return Response
-     */
-    public function recovery(Request $request)
-    {
-        $id = $request->input('id');
-        EgDept::whereIn('id',$id)->restore();
-        return $this->success([],'恢复成功');
-    }
 
-    /**
-     * 销毁删除部门
-     * @param Request $request
-     * @return Response
-     */
-    public function realDestroy(Request $request)
-    {
-        $id = $request->input('id');
-        EgDept::whereIn('id',$id)->forceDelete();
-        return $this->success([],'删除成功');
-    }
 }

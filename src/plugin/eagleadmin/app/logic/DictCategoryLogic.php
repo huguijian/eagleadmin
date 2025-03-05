@@ -1,24 +1,19 @@
 <?php
+namespace plugin\eagleadmin\app\logic;
 
-namespace plugin\eagleadmin\app\admin\controller;
-
-use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgDictCategory;
-use support\Request;
-use support\Db;
-use support\Response;
 
-class DictCategoryController extends BaseController
+class DictCategoryLogic extends ILogic
 {
-    protected $model;
+    private $egDictCategory;
+    public function __construct()
+    {
 
-    protected $noNeedAuth = ['dictAll'];
-
-    public function __construct() {
-        $this->model = new EgDictCategory();
+        $this->egDictCategory = new EgDictCategory();
     }
 
-    public function select(Request $request): Response
+
+    public function select($request)
     {
         $this->whereArr = [
             ['field'=>'name','opt'=>'like','val'=>$request->input('name')],
@@ -28,21 +23,15 @@ class DictCategoryController extends BaseController
         return parent::select($request);
     }
 
-    public function data(Request $request)
+    public function data($request)
     {
         $code = $request->input('code');
         $category = EgDictCategory::where('code', $code)->first();
         $data = $category->dict ?? [];
-        return $this->success($data);
+        return $data;
     }
 
-
-    /**
-     * 字典数据
-     * @param Request $request
-     * @return Response
-     */
-    public function dictAll(Request $request)
+    public function dictAll()
     {
         $dcs = EgDictCategory::where('status', 1)->get();
         $res = [];
@@ -54,27 +43,16 @@ class DictCategoryController extends BaseController
             }
             $res[$dc['code']] = $dict;
         }
-        return $this->success($res, '查询成功！');
-    }
-
-    /**
-     * 执行软删除
-     * @param Request $request
-     * @return Response
-     */
-    public function destroy(Request $request)
-    {
-        EgDictCategory::whereIn('id', $request->input('id'))->delete();
-        return $this->success('删除成功！');
+        return $res;
     }
 
 
     /**
      * 显示回收站信息
-     * @param Request $request
-     * @return Response
+     * @param mixed $request
+     * @return void
      */
-    public function recycle(Request $request)
+    public function recycle($request)   
     {
         [$where, $pageSize, $order] = $this->selectInput($request);
         $order = $this->orderBy ?? 'id,desc';
@@ -94,29 +72,6 @@ class DictCategoryController extends BaseController
             $list = call_user_func($this->callBack, $list) ?? [];
         }
         $res['items'] = $list;
-        return $this->success($res, 'ok');
-    }
-
-
-    /**
-     * 销毁
-     * @param Request $request
-     * @return Response
-     */
-    public function realDestroy(Request $request)
-    {
-        $res = EgDictCategory::whereIn('id',$request->input('id'))->forceDelete();
-        return $this->success($res);
-    }
-
-    /**
-     * 恢复软删除的数据
-     * @param Request $request
-     * @return Response
-     */
-    public function recovery(Request $request)
-    {
-        EgDictCategory::whereIn('id',$request->input('id'))->restore();
-        return $this->success([]);
+        return $res;
     }
 }

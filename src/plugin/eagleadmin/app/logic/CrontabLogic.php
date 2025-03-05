@@ -1,14 +1,55 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\logic;
+namespace plugin\eagleadmin\app\logic;
 
+use Plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgCrontab;
 use plugin\eagleadmin\app\model\EgCrontabLog;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class CrontabLogic
+class CrontabLogic extends ILogic
 {
+
+    public function __construct()
+    {
+        $this->model = new EgCrontab();
+    }
+
+    public function select($request)
+    {
+        $this->whereArr = [
+            ['opt'=>'=','field'=>'status','val'=>$request->get('status')],
+            ['opt'=>'like','field'=>'name','val'=>$request->get('name')],
+            ['opt'=>'=','field'=>'type','val'=>$request->get('type')]
+        ];
+        return parent::select($request);
+    }
+
+     /**
+     * 日志列表
+     */ 
+    public function logPageList($request)
+    {
+        $this->model = new EgCrontabLog();
+        [$where, $pageSize, $order] = $this->selectInput($request);
+        $order = $this->orderBy ?? 'id,desc';
+        $this->whereArr = [
+            ['opt'=>'=','field'=>'crontab_id','val'=>$request->get('crontab_id')]
+        ];
+        $model = $this->selectMap($where,$order);
+        if ($this->pageSize == -1) { // 值为-1表示不分页
+            $list = $model->get() ?? [];
+        } else {
+            $pageSize = $this->pageSize > 0 ? $this->pageSize : $pageSize;
+            $paginator = $model->paginate($pageSize);
+            $list = $paginator->items() ?? [];
+            $res['total'] = $paginator->total();
+        }
+        $res['items'] = $list;
+        return $res;
+    }
+
     /**
      * 执行定时任务
      * @param $id

@@ -1,7 +1,6 @@
 <?php
 
 namespace plugin\eagleadmin\app\model;
-use jwt\JwtInstance;
 
 class EgAttachment extends Base
 {
