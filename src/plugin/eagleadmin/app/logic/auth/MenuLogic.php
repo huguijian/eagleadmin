@@ -1,5 +1,6 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
+namespace plugin\eagleadmin\app\logic\auth;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\utils\Helper;
 use plugin\eagleadmin\app\model\EgMenu;
 use support\Db;

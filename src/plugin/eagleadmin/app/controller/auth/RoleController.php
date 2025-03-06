@@ -1,12 +1,12 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\auth;
 
 use plugin\eagleadmin\app\BaseController;
 use support\Request;
 use support\Response;
 use plugin\eagleadmin\app\model\EgRole;
-use plugin\eagleadmin\app\logic\RoleLogic;
+use plugin\eagleadmin\app\logic\auth\RoleLogic;
 
 class RoleController extends BaseController
 {
@@ -29,10 +29,25 @@ class RoleController extends BaseController
     }
 
 
+    /**
+     * 更新角色
+     * @param \support\Request $request
+     */
     public function update(Request $request)
     {
         $res = $this->roleLogic->update($request);
         return $this->success($res);
+    }
+
+    /**
+     * 添加角色
+     * @param \support\Request $request
+     * @return \support\Response
+     */
+    public function insert(Request $request):Response
+    {
+        $res = $this->roleLogic->insert($request);
+        return $this->success($res,'添加成功');
     }
     /**
      * 通过角色获取菜单
@@ -44,17 +59,29 @@ class RoleController extends BaseController
         return $this->success($res);    
     }
 
+    /**
+     * 获取角色部门
+     * @return void
+     */
     public function getDeptByRole()
     {
         $res = $this->roleLogic->getDeptByRole();
+        return $this->success($res);
     }
 
-    public function updateMenuPermission($id)
+    /**
+     * 菜单权限
+     */
+    public function updateMenuPermission(Request $request)
     {
-        $this->roleLogic->updateMenuPermission($id);
+        $this->roleLogic->updateMenuPermission($request);
         return $this->success([], '保存成功！');
     }
 
+    /**
+     * 数据权限
+     * @param mixed $id
+     */
     public function updateDataPermission($id)
     {
         $this->roleLogic->updateDataPermission($id);
@@ -96,5 +123,16 @@ class RoleController extends BaseController
         $id = $request->input('id');
         EgRole::whereIn('id',$id)->forceDelete();
         return $this->success([]);
+    }
+
+    /*
+     * 删除角色
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request)
+    {
+        $res = $this->roleLogic->delete($request);
+        return $this->success($res,'删除成功');
     }
 }

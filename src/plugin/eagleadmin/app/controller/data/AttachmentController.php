@@ -1,9 +1,9 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\data;
 
 use plugin\eagleadmin\app\BaseController;
-use plugin\eagleadmin\app\logic\AttachmentLogic;
+use plugin\eagleadmin\app\logic\data\AttachmentLogic;
 use support\Request;
 use support\Response;
 
@@ -16,12 +16,14 @@ class AttachmentController extends BaseController
        $this->attachmentLogic = new AttachmentLogic(); 
     }
 
+    /**
+     * 附件列表
+     * @param \support\Request $request
+     */
     public function select(Request $request)
     {
-
         $res = $this->attachmentLogic->select($request);
         return $this->success($res);
-      
     }
 
 
@@ -37,6 +39,10 @@ class AttachmentController extends BaseController
         return response()->download(public_path($info['path']));
     }
 
+    /**
+     * 删除附件
+     * @param \support\Request $request
+     */
     public function delete(Request $request)
     {
         $res = $this->attachmentLogic->delete($request);

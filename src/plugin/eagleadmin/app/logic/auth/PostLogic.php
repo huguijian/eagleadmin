@@ -1,6 +1,6 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
-
+namespace plugin\eagleadmin\app\logic\auth;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgPost;
 
 class PostLogic extends ILogic

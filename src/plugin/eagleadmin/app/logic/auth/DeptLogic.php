@@ -1,6 +1,6 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
-
+namespace plugin\eagleadmin\app\logic\auth;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgDept;
 use plugin\eagleadmin\app\model\EgDeptLeader;
 use plugin\eagleadmin\utils\Helper;
@@ -13,6 +13,11 @@ class DeptLogic extends ILogic
         $this->egDeptLeader = new EgDeptLeader();
     }
 
+    /**
+     * 部门列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request) 
     {
         $this->callBack = function($data) {
@@ -38,10 +43,20 @@ class DeptLogic extends ILogic
         return parent::select($request);
     }
 
+    /**
+     * 领导列表
+     * @param mixed $request
+     * @return array
+     */
     public function leaders($request)
     {
         $this->model = $this->egDeptLeader;
         $this->withArr = ['userInfo'];
+        $this->hasArr[] = ['relation_name'=>'userInfo','where'=>[
+            ['user_name','like','%'.$request->input('user_name').'%'],
+            ['nick_name','like','%'.$request->input('nick_name').'%']
+        ]];
+        
         [$where, $pageSize, $order] = $this->selectInput($request);
         $order = $this->orderBy ?? 'id,desc';
 
@@ -63,6 +78,12 @@ class DeptLogic extends ILogic
     }
 
 
+    /**
+     * 删除领导
+     * @param mixed $request
+     * @param mixed $msg
+     * @return bool
+     */
     public function delLeader($request,&$msg)
     {
         $ids = $request->input('id');
@@ -76,6 +97,11 @@ class DeptLogic extends ILogic
         return true;
     }
 
+    /**
+     * 添加领导
+     * @param mixed $request
+     * @return bool
+     */
     public function addLeader($request)
     {
         $params = $request->all();
@@ -88,6 +114,11 @@ class DeptLogic extends ILogic
         return true;
     }
 
+    /**
+     * 部门回收站
+     * @param mixed $request
+     * @return array
+     */
     public function recycle($request)
     {
         $this->callBack = function($data) {

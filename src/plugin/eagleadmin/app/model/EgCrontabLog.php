@@ -15,4 +15,6 @@ class EgCrontabLog extends Base
 
     const UPDATED_AT = 'update_time';
 
+    protected $guarded = ['id'];
+
 }

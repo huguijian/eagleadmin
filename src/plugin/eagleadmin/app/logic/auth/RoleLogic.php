@@ -1,8 +1,9 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
-
+namespace plugin\eagleadmin\app\logic\auth;
+use plugin\eagleadmin\app\logic\ILogic;
 use support\Db;
 use plugin\eagleadmin\app\model\EgRole;
+use plugin\eagleadmin\app\model\EgRoleDept;
 use plugin\eagleadmin\utils\Helper;
 use plugin\eagleadmin\app\model\EgRoleMenu;
 class RoleLogic extends ILogic
@@ -61,9 +62,9 @@ class RoleLogic extends ILogic
         ];
     }
 
-    public function updateMenuPermission($id)
+    public function updateMenuPermission($request)
     {
-        $id = request()->input('id');
+        $id = $request->input('id');
         try {
             Db::beginTransaction();
             EgRoleMenu::where('role_id', $id)->delete();
@@ -84,12 +85,24 @@ class RoleLogic extends ILogic
         return true;
     }
 
-    public function updateDataPermission($id)
+    public function updateDataPermission($request)
     {
-        $id = request()->input('id');
+        $id = $request->input('id');
+        $dataScope = $request->input('data_scope');
         try {
             Db::beginTransaction();
-
+            EgRole::where('id',$id)->update(['data_scope' => $dataScope]);
+            if ($dataScope == '2') {
+                EgRoleDept::where('role_id', $id)->delete();
+                $roleDept = [];
+                foreach ($request->input('dept_ids') as $deptId) {
+                    $roleDept[] = [
+                        'role_id'=> $id,
+                        'dept_id'=> $deptId,
+                    ];
+                }
+                EgRoleDept::insert($roleDept);
+            }
             Db::commit();
         } catch (\Throwable $e) {
             Db::rollBack();

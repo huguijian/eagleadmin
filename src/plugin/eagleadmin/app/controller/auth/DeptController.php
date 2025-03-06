@@ -1,7 +1,7 @@
 <?php
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\auth;
 use plugin\eagleadmin\app\BaseController;
-use plugin\eagleadmin\app\logic\DeptLogic;
+use plugin\eagleadmin\app\logic\auth\DeptLogic;
 use plugin\eagleadmin\app\model\EgDept;
 use support\Request;
 use support\Response;
@@ -29,6 +29,27 @@ class DeptController extends BaseController
         return $this->success($res, 'ok');
     }
 
+    /**
+     * 添加部门
+     * @param \support\Request $request
+     * @return \support\Response
+     */
+    public function insert(Request $request) :Response
+    {
+        $res = $this->deptLogic->insert($request);
+        return $this->success($res,'添加部门');
+    }
+
+    /**
+     * 修改部门
+     * @param \support\Request $request
+     * @return \support\Response
+     */
+    public function update(Request $request) :Response
+    {
+        $res = $this->deptLogic->update($request);
+        return $this->success($res,'修改部门');
+    }
 
     /**
      * 领导列表

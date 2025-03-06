@@ -1,21 +1,21 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\monitor;
 
-use plugin\eagleadmin\app\logic\SysLogic;
+use plugin\eagleadmin\app\logic\monitor\LogLogic;
 use support\Request;
 use support\Response;
 use plugin\eagleadmin\app\BaseController;
 
-class SysController extends BaseController
+class LogController extends BaseController
 {
     protected $noNeedAuth = ['loginLog', 'sysLog'];
 
 
-    private $sysLogic;
+    private $logLogic;
     public function __construct()
     {
-        $this->sysLogic = new SysLogic();
+        $this->logLogic = new LogLogic();
     }
    
     /**
@@ -25,7 +25,7 @@ class SysController extends BaseController
      */
     public function loginLog(Request $request)
     {
-        $res = $this->sysLogic->loginLog($request);
+        $res = $this->logLogic->loginLog($request);
         return $this->success($res); 
     }
 
@@ -38,7 +38,7 @@ class SysController extends BaseController
     public function sysLog(Request $request)
     {
         
-        $res = $this->sysLogic->sysLog($request);
+        $res = $this->logLogic->sysLog($request);
         return $this->success($res);
     }
 
@@ -50,7 +50,7 @@ class SysController extends BaseController
     public function deleteLoginLog(Request $request)
     {
     
-        $this->sysLogic->deleteUserLog($request->input('id'));
+        $this->logLogic->deleteUserLog($request->input('id'));
         return $this->success([]);
     }
 
@@ -61,7 +61,7 @@ class SysController extends BaseController
      */
     public function deleteOperLog(Request $request)
     {
-        $this->sysLogic->deleteOperLog($request->input('id'));
+        $this->logLogic->deleteOperLog($request->input('id'));
         return $this->success([]);  
     }
 }

@@ -45,7 +45,7 @@ class EgRole extends Base
     public function depts()
     {
         return $this->belongsToMany(
-            EgDepartment::class,
+           EgDept ::class,
             EgRoleDept::class,
             'role_id',
             'dept_id',

@@ -179,6 +179,7 @@ trait Crud
         foreach ($this->whereArr as $value) {
             if (isset($value["opt"])) {
                 if (!empty($value["val"])) {
+                    is_string($value['val']) && trim($value['val']); 
                     if (strtolower($value["opt"]) == 'like' || strtolower($value["opt"]) == 'not like'){
                         $model->where($value["field"],$value["opt"], "%".$value["val"]."%");
                     }elseif (in_array(strtolower($value["opt"]),['>', '=', '<', '<>','>=','<='])) {
@@ -200,7 +201,10 @@ trait Crud
                         if (is_string($valArr)) {
                             $valArr = explode(',',$valArr);
                         }
-                        $model->whereBetween($value["field"], $valArr);
+                        $valArr = array_filter($valArr);
+                        if ($valArr) {
+                            $model->whereBetween($value["field"], $valArr);
+                        }
                     }
                 }
             }else{

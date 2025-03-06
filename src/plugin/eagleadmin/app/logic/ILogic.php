@@ -14,6 +14,6 @@ abstract class ILogic
      */
     public function __call($name, $arguments)
     {
-        call_user_func_array([$this->model,$name],$arguments);
+        return call_user_func_array([$this->model,$name],$arguments);
     }
 }

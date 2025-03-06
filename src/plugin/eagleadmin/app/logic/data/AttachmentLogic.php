@@ -1,6 +1,6 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
-
+namespace plugin\eagleadmin\app\logic\data;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgAttachment;
 
 class AttachmentLogic extends ILogic
@@ -57,12 +57,14 @@ class AttachmentLogic extends ILogic
 
 
         $mineType = $getExtensionsByType($request->get('mime_type'));
-
-        if ($mineType) {
-            $this->whereArr = [
-                ['field'=>'ext','opt'=>'in','val'=>$mineType]
-            ];
-        }
+        $storageMode = $request->get('storage_mode');
+        $createTime = $request->get('create_time');
+        $this->whereArr = [
+            ['field'=>'ext','opt'=>'in','val'=>$mineType],
+            ['field'=>'storage_mode','opt'=>'=','val'=>$storageMode],
+            ['field'=>'file_name','opt'=>'like','val'=>'%'.$request->get('file_name').'%'],
+            ['field'=>'create_time','opt'=>'between','val'=>[$createTime[0]??'',$createTime[1]??'']]
+         ];
 
         return parent::select($request);
     }

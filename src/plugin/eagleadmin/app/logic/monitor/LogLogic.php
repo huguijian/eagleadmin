@@ -1,10 +1,10 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
+namespace plugin\eagleadmin\app\logic\monitor;
 
 use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgLoginLog;
 use plugin\eagleadmin\app\model\EgOperateLog;
-class SysLogic extends ILogic
+class LogLogic extends ILogic
 {
     private $egOperateLog;
     public function __construct()

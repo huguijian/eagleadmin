@@ -1,11 +1,11 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\tool;
 use plugin\eagleadmin\app\BaseController;
 use support\Request;
 use plugin\eagleadmin\app\model\EgCrontab;
 use plugin\eagleadmin\app\model\EgCrontabLog;
-use plugin\eagleadmin\app\logic\CrontabLogic;
+use plugin\eagleadmin\app\logic\tool\CrontabLogic;
 use support\Response;
 class CrontabController extends BaseController
 {
@@ -17,8 +17,10 @@ class CrontabController extends BaseController
     }
 
     /**
-     * 查询
-     */ 
+     * 任务列表
+     * @param \support\Request $request
+     * @return \support\Response
+     */
     public function select(Request $request):Response
     {
         $res = $this->cronLogic->select($request);
@@ -27,6 +29,8 @@ class CrontabController extends BaseController
 
     /**
      * 修改状态
+     * @param \support\Request $request
+     * @return \support\Response
      */
     public function changeStatus(Request $request):Response
     {
@@ -39,7 +43,9 @@ class CrontabController extends BaseController
 
     /**
      * 日志列表
-     */ 
+     * @param \support\Request $request
+     * @return \support\Response
+     */
     public function logPageList(Request $request):Response
     {
         $res = $this->cronLogic->logPageList($request);
@@ -49,6 +55,8 @@ class CrontabController extends BaseController
 
     /**
      * 删除日志
+     * @param \support\Request $request
+     * @return \support\Response
      */
     public function deleteCrontabLog(Request $request):Response
     {
@@ -59,7 +67,9 @@ class CrontabController extends BaseController
 
 
     /**
-     * 添加
+     * 添加定时任务
+     * @param \support\Request $request
+     * @return \support\Response
      */
     public function save(Request $request):Response
     {
@@ -69,7 +79,21 @@ class CrontabController extends BaseController
 
 
     /**
-     * 删除
+     * 修改定时任务
+     * @param \support\Request $request
+     * @return \support\Response
+     */
+    public function update(Request $request):Response
+    {
+        $res = $this->cronLogic->update($request);
+        return $this->success($res,'更新成功！');
+    }
+
+
+    /**
+     * 删除定时任务
+     * @param \support\Request $request
+     * @return \support\Response
      */
     public function destroy(Request $request):Response
     {
@@ -78,7 +102,9 @@ class CrontabController extends BaseController
     }
     
     /**
-     * 执行
+     * 执行任务
+     * @param \support\Request $request
+     * @return \support\Response
      */
     public function run(Request $request):Response
     {

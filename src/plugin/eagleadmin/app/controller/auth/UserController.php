@@ -1,11 +1,10 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
-
+namespace plugin\eagleadmin\app\controller\auth;
 use plugin\eagleadmin\app\BaseController;
 use support\Request;
 use support\Response;
-use plugin\eagleadmin\app\logic\UserLogic;
+use plugin\eagleadmin\app\logic\auth\UserLogic;
 use plugin\eagleadmin\app\model\EgUser;
 
 
@@ -35,6 +34,19 @@ class UserController extends BaseController
         }
 
         return $this->success([], '添加成功！');
+    }
+
+
+    /**
+     * 删除用户
+     * @param \support\Request $request
+     * @return \support\Response
+     */
+    public function delete(Request $request): Response
+    {
+        $res = $this->userLogic->delete($request);
+        return $this->success([],'删除成功');
+        
     }
 
     public function info(Request $request,$model=null): Response

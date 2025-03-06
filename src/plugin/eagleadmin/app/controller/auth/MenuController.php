@@ -1,8 +1,8 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\auth;
 
-use plugin\eagleadmin\app\logic\MenuLogic;
+use plugin\eagleadmin\app\logic\auth\MenuLogic;
 use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\model\EgMenu;
 use support\Request;
@@ -17,12 +17,21 @@ class MenuController extends BaseController
         $this->menuLogic = new MenuLogic();
     }
 
+    /**
+     * 菜单列表
+     * @param \support\Request $request
+     */
     public function index(Request $request)
     {
         $res = $this->menuLogic->menu($request);
         return $this->success($res, '查询成功！');
     }
 
+    /**
+     * 删除菜单
+     * @param Request $request
+     * @return Response
+     */
     public function delete(Request $request):Response
     {
         $ids = $request->input('id');
@@ -44,6 +53,11 @@ class MenuController extends BaseController
         return $this->success($res, '添加成功！');
     }
 
+    /**
+     * 修改菜单
+     * @param \support\Request $request
+     * @return \support\Response
+     */
     public function update(Request $request):Response
     {
         $res = $this->menuLogic->update($request);
@@ -84,6 +98,16 @@ class MenuController extends BaseController
         $id = $request->input('id');
         $this->menuLogic->whereIn('id',$id)->forceDelete();
         return $this->success([], '删除成功！');
+    }
+
+    /**
+     * 修改状态
+     * @param \support\Request $request
+     */
+    public function changeStatus(Request $request)
+    {
+        $res = $this->menuLogic->update($request);
+        return $this->success($res,'修改成功！');
     }
 
 }
