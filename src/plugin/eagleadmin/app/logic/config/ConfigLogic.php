@@ -1,6 +1,6 @@
 <?php
-namespace plugin\eagleadmin\app\logic;
-
+namespace plugin\eagleadmin\app\logic\config;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgSystemConfig;
 
 class ConfigLogic extends ILogic
@@ -14,6 +14,8 @@ class ConfigLogic extends ILogic
     {
         $this->whereArr = [
             ['opt'=>'=', 'field'=>'group_id', 'val'=>$request->input('group_id')],
+            ['opt'=>'like', 'field'=>'name', 'val'=>'%'.$request->input('name').'%'],
+            ['opt'=>'like', 'field'=>'key', 'val'=>'%'.$request->input('key').'%'],
         ];
         return parent::select($request);
     }

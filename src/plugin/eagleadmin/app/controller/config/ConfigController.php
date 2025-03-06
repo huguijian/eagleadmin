@@ -1,9 +1,9 @@
 <?php
 
-namespace plugin\eagleadmin\app\controller;
+namespace plugin\eagleadmin\app\controller\config;
 
 use plugin\eagleadmin\app\BaseController;
-use plugin\eagleadmin\app\logic\ConfigLogic;
+use plugin\eagleadmin\app\logic\config\ConfigLogic;
 use support\Request;
 
 class ConfigController extends BaseController
