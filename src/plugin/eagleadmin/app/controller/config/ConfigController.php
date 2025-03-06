@@ -15,6 +15,11 @@ class ConfigController extends BaseController
         $this->configLogic = new ConfigLogic();
     }
 
+
+    /**
+     * 配置项列表
+     * @param \support\Request $request
+     */
     public function select(Request $request)
     {
         $res = $this->configLogic->select($request) ;
@@ -22,6 +27,10 @@ class ConfigController extends BaseController
     }
 
 
+    /**
+     * 新增配置项
+     * @param \support\Request $request
+     */
     public function insert(Request $request)
     {
         $res = $this->configLogic->insert($request) ;
@@ -29,6 +38,11 @@ class ConfigController extends BaseController
     }
 
 
+
+    /**
+     * 删除配置项
+     * @param \support\Request $request
+     */
     public function delete(Request $request)
     {
         $this->configLogic->delete($request);
@@ -36,6 +50,10 @@ class ConfigController extends BaseController
     }
 
 
+    /** 
+     * 编辑配置项
+     * @param \support\Request $request
+     */
     public function update(Request $request)
     {
         $this->configLogic->update($request);
@@ -43,9 +61,23 @@ class ConfigController extends BaseController
     }
 
 
+    /**
+     * 批量修改配置项
+     * @param \support\Request $request
+     */
     public function batchUpdate(Request $request)
     {
         $this->configLogic->batchUpdate($request);
         return $this->success([],'修改成功');
+    }
+
+
+    /**
+     * 清除缓存
+     * @param \support\Request $request
+     */
+    public function clearAllCache(Request $request)
+    {
+        return $this->success([],'清除成功');
     }
 }
