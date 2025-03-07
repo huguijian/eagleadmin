@@ -4,7 +4,6 @@
  */
 use support\Response;
 use support\Log;
-use plugin\eagleadmin\app\exception\BusinessException as MyBusinessException;
 use Tinywan\Jwt\JwtToken;
 use Tinywan\Jwt\Exception\JwtTokenExpiredException;
 
@@ -112,29 +111,6 @@ if (function_exists("get_mini_config")) {
                 //      'multiplier' => 3
                 //  ],
             ],
-        ];
-    }
-}
-
-if (!function_exists("success")) {
-    function success($data = [], $msg = 'success', $code = 0): Response
-    {
-        throw new MyBusinessException($msg ?? '', $data, $code);
-    }
-}
-
-if (!function_exists("tips")) {
-    function tips($msg = 'fail', $code = -1, $data = []): Response
-    {
-        throw new MyBusinessException($msg ?? '', $data, $code);
-    }
-}
-
-if (!function_exists("codeMsg")) {
-    function codeMsg($code, $msg) {
-        return [
-            'code' => $code,
-            'msg' => $msg,
         ];
     }
 }

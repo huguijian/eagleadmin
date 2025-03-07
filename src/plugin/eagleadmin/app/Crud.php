@@ -3,10 +3,13 @@
 namespace plugin\eagleadmin\app;
 
 use plugin\eagleadmin\app\common\Auth;
+use plugin\eagleadmin\app\model\EgUserRole;
 use support\Db;
 use support\exception\BusinessException;
 use support\Model;
 use support\Request;
+use plugin\eagleadmin\app\model\EgRole;
+use plugin\eagleadmin\utils\Helper;
 
 trait Crud
 {
@@ -62,11 +65,10 @@ trait Crud
     protected $pageSize = null;
 
     /**
-     * 数据限制
-     * 例如当$dataLimit='personal'时将只返回当前管理员的数据
+     * 数据限制是否开启
      * @var string
      */
-    protected $dataLimit = null;
+    protected $dataLimit = false;
 
     /**
      * 数据限制字段
@@ -456,21 +458,43 @@ trait Crud
         $table = $this->model->getTable();
         $allow_column = Db::select("desc `$table`");
         if (!$allow_column) {
-            return $this->json(2, '表不存在');
+            throw new BusinessException("表不存在");
         }
 
         $where = [];
-        // 按照数据限制字段返回数据
-        if ($this->dataLimit === 'personal') {
-            $where[$this->dataLimitField] = admin_id();
-        } elseif ($this->dataLimit === 'auth') {
-            $primary_key = $this->model->getKeyName();
-            if (!Auth::isSupperAdmin() && $this->dataLimitField != $primary_key) {
-//                $where[$this->dataLimitField] = ['in', Auth::getScopeAdminIds(true)];
-                $where[] = ['operator'=>'in','field'=>$this->dataLimitField,'val'=> Auth::getScopeAdminIds(true)];
+        $this->dataLimit = true;
+        if ($this->dataLimit) {
+            $userIds = [];
+            $roleList = EgUserRole::with('roleInfo')->where('user_id',admin_id())->get()->toArray();
+            foreach ($roleList as $roleInfo) {
+                switch ($roleInfo['role_info']['data_scope']) {
+                    case EgRole::DATA_SCOPE['全部数据权限']:
+                        return [$where, $page_size, $order]; 
+                    case EgRole::DATA_SCOPE['自定义数据权限']:
+                        $deptIds = Db::table('eg_role_dept')->where('role_id', $roleInfo['role_id'])->pluck('dept_id')->toArray();
+                        $uid = Db::table('eg_user')->where('dept_id', 'in', $deptIds)->pluck('id')->toArray();
+                        $userIds = array_merge($userIds, $uid);
+                        break;
+                    case EgRole::DATA_SCOPE['本部门数据权限']:
+                        $uid = Db::table('eg_user')->where('dept_id',admin('dept_id'))->pluck('id')->toArray();
+                        $userIds = array_merge($userIds, $uid);
+                        break;
+                    case EgRole::DATA_SCOPE['本部门及以下数据权限']:
+                        $deptData = Db::table('eg_dept')->where('parent_id',admin('dept_id'))->get()->toArray();
+                        $deptIds = Helper::getChildrenIds($deptData,admin('dept_id'));
+                        $uid = Db::table('eg_user')->where('dept_id', 'in', $deptIds)->pluck('id')->toArray();
+                        $userIds = array_merge($userIds, $uid);
+                        break;
+                    case EgRole::DATA_SCOPE['仅本人数据权限']:
+                        $userIds = admin_id();
+                        break;
+                }
+            }
+
+            if (!empty($userIds)) {
+                $where[] = ['field'=>$this->dataLimitField,'opt'=>'in','val'=>$userIds];
             }
         }
-
         return [$where, $page_size, $order];
     }
 }

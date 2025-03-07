@@ -1,13 +1,11 @@
 <?php
 namespace plugin\eagleadmin\api;
-
-
 use plugin\eagleadmin\app\model\EgRole;
 use plugin\eagleadmin\app\model\EgUserRole;
 use support\exception\BusinessException;
 use \Tinywan\Jwt\JwtToken;
-use plugin\eagleadmin\app\logic\UserLogic;
-
+use plugin\eagleadmin\app\logic\auth\UserLogic;
+use plugin\eagleadmin\app\model\EgUser;
 /**
  * 对外提供的鉴权接口
  */
@@ -93,56 +91,17 @@ class Auth
             return true;
         }
 
-        $user = getUserInfo();
+        $user = EgUser::where('id',admin_id())->first();
         $codes = (new UserLogic())->getCodes($user);
         $currentPath = request()->path();
         $currentPath = str_replace('/app/eagleadmin', '', $currentPath);
-        $hasAuth = false;
-        foreach($codes as $code) {
-            // 仅考虑前缀匹配，即拥有的权限包含在当前path中即认为有权限，如当前路由/app/hzrjlims/sample/sample/select,权限配置为/app/hzrjlims/sample即算有权限
-            if (strpos($currentPath, $code) === 0) {
-                $hasAuth = true;
-                break;
-            }
-        }
-        if (!$hasAuth) {
+      
+        if (!in_array($currentPath, $codes)) {
             $msg = '无权限';
             $code = 2;
             return false;
         }
-        /*
-        $roleIds = EgUserRole::where("user_id",$accessUserId)->pluck("role_id");
-        $rules   = EgRole::whereIn("id",$roleIds)->pluck("rules");
-        // 角色没有规则
-        $rule_ids = [];
-
-        foreach ($rules as $rule_string) {
-            if (!$rule_string) {
-                continue;
-            }
-            $rule_ids = array_merge($rule_ids, explode(',', $rule_string));
-        }
-
-        // 超级管理员
-        if (in_array('*', $rule_ids)){
-            return true;
-        }
-
-        // 查询是否有当前控制器的规则
-//        Db::connection()->enableQueryLog();
-        $rule = EgMenu::where(function ($query) use ($controller, $action) {
-            $query->where('auth', "$controller@$action");
-        })->whereIn('id', $rule_ids)->first();
-//        var_dump(Db::getQueryLog());
-//        var_dump("$controller@$action");
-
-        if (!$rule) {
-            $msg = '无权限';
-            $code = 2;
-            return false;
-        }
-        */
-
+       
         return true;
     }
 

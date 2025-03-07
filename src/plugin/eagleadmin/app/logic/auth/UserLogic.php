@@ -1,6 +1,7 @@
 <?php
 
 namespace plugin\eagleadmin\app\logic\auth;
+use plugin\eagleadmin\app\exception\BusinessException;
 use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgMenu;
 use plugin\eagleadmin\app\model\EgUser;
@@ -121,6 +122,11 @@ class UserLogic extends ILogic
     }
 
 
+    /**
+     * 用户回收站
+     * @param \support\Request $request
+     * @return array
+     */
     public  function recycle(Request $request)
     {
         [$where, $pageSize, $order] = $this->selectInput($request);
@@ -167,9 +173,14 @@ class UserLogic extends ILogic
         return $res;
     }
 
+
+    /**
+     * 获取登录用户信息
+     * @return array
+     */
     public function loginInfo()
     {
-        $user = getUserInfo();
+        $user = EgUser::where('id','=', admin_id())->first();
         $info['user'] = $user;
         if (isset($user) && $user['id'] === 1) {
             $info['codes'] = ['*'];
@@ -185,6 +196,10 @@ class UserLogic extends ILogic
         return $info;
     }
 
+    /**
+     * 添加用户
+     * @return bool
+     */
     public function addUser($params,&$msg): bool
     {
         $params['avatar'] = $params['avatar'] ?? '';
@@ -254,6 +269,9 @@ class UserLogic extends ILogic
             $roleIds = $request->input('role_ids');
             $postIds = $request->input('post_ids');
             $id = $request->input('id');
+            if (!$id) {
+                throw new BusinessException('用户ID不能为空');
+            }
             $password = $request->input('password');
             $params = $request->all();
             $inputData = $this->inputFilter($params);
@@ -307,6 +325,11 @@ class UserLogic extends ILogic
         }
     }
 
+    /**
+     * 用户列表
+     * @param \support\Request $request
+     * @return array
+     */
     public function select(Request $request)
     {
         [$where, $pageSize, $order] = $this->selectInput($request);

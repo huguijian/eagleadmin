@@ -1,9 +1,6 @@
 <?php
 
 namespace plugin\eagleadmin\utils;
-
-use Tinywan\Jwt\JwtToken;
-
 /**
  * 帮助类
  */
@@ -94,5 +91,22 @@ class Helper
             }
         }
         return $tree;
+    }
+
+    /**
+     * 获取所有子级id
+     * @param array $data
+     * @param mixed $pid
+     * @return array
+     */
+    public static function getChildrenIds(array $data,$pid): array
+    {
+        foreach ($data as $item) {
+            if ($pid==$item['parent_id']) {
+                $childrenIds[] = $item['id'];
+                $childrenIds = array_merge($childrenIds,self::getChildrenIds($data,$item['id']));
+            }
+        }
+        return $childrenIds ?? [];
     }
 }

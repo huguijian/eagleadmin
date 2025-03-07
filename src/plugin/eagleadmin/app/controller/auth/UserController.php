@@ -28,7 +28,8 @@ class UserController extends BaseController
     public function insert(Request $request): Response
     {
         $params = $request->all();
-        $res = $this->userLogic->addUser($params,$msg);
+        $msg = '';
+        $res = $this->userLogic->addUser($params, $msg);
         if ($res==false) {
             return $this->error($msg);
         }
@@ -122,7 +123,9 @@ class UserController extends BaseController
     public function modifyPassword(Request $request)
     {
         $params = $request->all();
-        $res = $this->userLogic->modifyPassword($params,$code,$msg);
+        $code = 0;
+        $msg = '';
+        $res = $this->userLogic->modifyPassword($params, $code, $msg);
         if ($res===false) {
             return $this->error($msg);
         }
@@ -139,7 +142,9 @@ class UserController extends BaseController
     public function getUserInfoByIds(Request $request)
     {
         $params = $request->all();
-        $res = $this->userLogic->getUserInfoByIds($params,$code,$msg);
+        $code = 0;
+        $msg = '';
+        $res = $this->userLogic->getUserInfoByIds($params, $code, $msg);
         return $this->success($res);
     }
 

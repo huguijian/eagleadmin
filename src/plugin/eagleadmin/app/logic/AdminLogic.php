@@ -70,7 +70,7 @@ class AdminLogic extends ILogic
             'email' => $userInfo['email'],
             "avatar" => $userInfo["avatar"],
             "phone" => $userInfo["phone"],
-            "org_id" => $userInfo["org_id"],
+            "dept_id" => $userInfo["dept_id"],
             "nick_name" => $userInfo["nick_name"],
         ]);
         $department = $userInfo['department'] ?? [];

@@ -29,4 +29,10 @@ class EgUserRole extends Base
 
     const UPDATED_AT = 'update_time';
 
+
+    public function roleInfo()
+    {
+        return $this->hasOne(EgRole::class, 'id','role_id');
+    }
+
 }

@@ -32,6 +32,13 @@ class EgRole extends Base
 
     const UPDATED_AT = 'update_time';
 
+    const DATA_SCOPE = [
+        '全部数据权限' => 1,
+        '自定义数据权限' => 2,
+        '本部门数据权限' => 3,
+        '本部门及以下数据权限' => 4,
+        '本人数据权限' => 5,
+    ];
     public function menus()
     {
         return $this->belongsToMany(
