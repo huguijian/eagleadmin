@@ -3,7 +3,7 @@ namespace plugin\eagleadmin\process;
 
 use Workerman\Crontab\Crontab;
 use plugin\eagleadmin\app\model\EgCrontab;
-use plugin\eagleadmin\app\admin\logic\CrontabLogic;
+use plugin\eagleadmin\app\logic\tool\CrontabLogic;
 
 class Task
 {

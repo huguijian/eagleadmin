@@ -41,50 +41,6 @@ if (!function_exists("admin_id")) {
     }
 }
 
-
-/**
- * 发送模板短信
- * @param to 手机号码集合,用英文逗号分开
- * @param datas 内容数据 格式为数组 例如：array('Marry','Alon')，如不需替换请填 null
- * @param $tempId 模板Id
- */
-if (!function_exists("send_sms")) {
-    /**
-     * @throws LogErrorException
-     */
-    function send_sms($to, $datas, $tempId) {
-        //主帐号
-        $accountSid   = env("SMS_ACCOUNT_SID");
-        //主帐号Token
-        $accountToken = env("SMS_ACCOUNT_TOKEN");
-        //应用Id
-        $appId = env("SMS_APP_ID");
-        //请求地址，格式如下，不需要写https://
-        $serverIP = 'app.cloopen.com';
-        //请求端口
-        $serverPort = '8883';
-        //REST版本号
-        $softVersion = '2013-12-26';
-        // 初始化REST SDK
-        $rest = new \plugin\eagleadmin\extend\sms\SDK\REST($serverIP, $serverPort, $softVersion);
-        $rest->setAccount($accountSid, $accountToken);
-        $rest->setAppId($appId);
-
-        // 发送模板短信
-        //echo "Sending TemplateSMS to $to <br/>";
-        $result = $rest->sendTemplateSMS($to, $datas, $tempId);
-        if ($result == NULL) {
-            throw new \support\exception\BusinessException("sms result error!");
-        }
-        if ($result->statusCode != 0) {
-            throw new \support\exception\BusinessException("sms error code:".$result->statusCode." msg:".$result->statusMsg);
-        }
-        return true;
-    }
-}
-
-
-
 if (function_exists("get_mini_config")) {
     function get_mini_config(): array
     {

@@ -16,6 +16,11 @@ class DictController extends BaseController
         
     }
 
+    /**
+     * 获取字典数据
+     * @param \support\Request $request
+     * @return \support\Response
+     */
     public function select(Request $request): Response
     {
         $res = $this->dictLogic->select($request);

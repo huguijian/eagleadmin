@@ -13,6 +13,11 @@ class RoleLogic extends ILogic
         $this->model = new EgRole();
     }
 
+    /**
+     * 角色列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request) 
     {
         $this->callBack = function($data) {
@@ -40,6 +45,10 @@ class RoleLogic extends ILogic
         return parent::select($request);
     }
 
+    /**
+     * 获取角色对应的菜单
+     * @return array{id: mixed|null, menus: mixed}
+     */
     public function getMenuByRole()
     {
         $id = request()->input('id');
@@ -51,6 +60,10 @@ class RoleLogic extends ILogic
         ];
     }
 
+    /**
+     * 获取角色对应的部门
+     * @return array{depts: mixed, id: mixed|null}
+     */
     public function getDeptByRole()
     {
         $id = request()->input('id');
@@ -62,6 +75,11 @@ class RoleLogic extends ILogic
         ];
     }
 
+    /**
+     * 菜单权限
+     * @param mixed $request
+     * @return bool
+     */
     public function updateMenuPermission($request)
     {
         $id = $request->input('id');
@@ -85,6 +103,12 @@ class RoleLogic extends ILogic
         return true;
     }
 
+
+    /**
+     * 数据权限
+     * @param mixed $request
+     * @return bool
+     */
     public function updateDataPermission($request)
     {
         $id = $request->input('id');
@@ -112,11 +136,21 @@ class RoleLogic extends ILogic
     }
 
 
+    /**
+     * 更新角色信息
+     * @param mixed $request
+     * @return array{row: bool|mixed}
+     */
     public function update($request)
     {
         return parent::update($request);
     }
 
+    /**
+     * 角色回收站
+     * @param mixed $request
+     * @return array
+     */
     public function recycle($request)
     {
             $this->callBack = function($data) {

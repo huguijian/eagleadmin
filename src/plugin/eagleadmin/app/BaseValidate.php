@@ -7,7 +7,7 @@ use think\Validate;
 
 class BaseValidate extends Validate
 {
-    protected string $method = '';
+    protected $method = '';
 
     /**
      * 是否GET请求

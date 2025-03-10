@@ -31,7 +31,8 @@ class UserLogic extends ILogic
     }
 
     /**
-     * 获取用户有权限的菜单路径列表
+     * 获取指定用户权限标识列表
+     * @param mixed $user
      */
     public function getCodes($user)
     {
@@ -50,7 +51,8 @@ class UserLogic extends ILogic
     }
 
     /**
-     * 获取用户有权限的角色名称列表
+     * 获取用户的角色名列表
+     * @param mixed $user
      */
     public function getRoles($user)
     {
@@ -62,7 +64,9 @@ class UserLogic extends ILogic
 
 
     /**
-     * 获取用户有权限的菜单路由列表
+     * 获取用户菜单
+     * @param mixed $user
+     * @return array
      */
     public function getMenus($user)
     {
@@ -251,6 +255,11 @@ class UserLogic extends ILogic
     }
 
 
+    /**
+     * 用户信息
+     * @param mixed $request
+     * @return array{row: mixed}
+     */
     public function userInfo($request)
     {
         $this->callBack = function($item) {
@@ -263,6 +272,12 @@ class UserLogic extends ILogic
         return $this->info($request);
     }
 
+    /**
+     * 修改用户
+     * @param mixed $request
+     * @throws \plugin\eagleadmin\app\exception\BusinessException
+     * @return array{row: bool|mixed|bool}
+     */
     public function update($request)    
     {
         if ($request->method() == "POST") {

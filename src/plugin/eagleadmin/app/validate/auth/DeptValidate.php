@@ -4,12 +4,11 @@ namespace plugin\eagleadmin\app\admin\validate\auth;
 
 use plugin\eagleadmin\app\BaseValidate;
 
-class DepartmentValidate extends BaseValidate
+class  DeptValidate extends BaseValidate
 {
     protected $rule = [
         'name' => 'require',
         'id' => 'require',
-        'head_ids' => 'checkHeadIds',
     ];
 
     protected $message = [
@@ -25,13 +24,4 @@ class DepartmentValidate extends BaseValidate
             'name',
         ],
     ];
-
-    protected function checkHeadIds($value, $rule, $data = [], $field = '')
-    {
-        $headIds = $data['head_ids'] ?? [];
-        if ($headIds && !is_array($headIds)) {
-            return 'head_ids必须是数组！';
-        }
-        return true;
-    }
 }

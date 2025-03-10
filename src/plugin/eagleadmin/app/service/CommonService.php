@@ -2,7 +2,6 @@
 
 namespace plugin\eagleadmin\app\service;
 
-use CURLFile;
 use plugin\eagleadmin\app\model\EgAttachment;
 use plugin\eagleadmin\app\model\EmsAttachment;
 use Shopwwi\WebmanFilesystem\FilesystemFactory;

@@ -16,6 +16,11 @@ class CrontabLogic extends ILogic
         $this->model = new EgCrontab();
     }
 
+    /**
+     * 定时任务列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request)
     {
         $this->whereArr = [

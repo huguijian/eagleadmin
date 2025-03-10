@@ -70,7 +70,8 @@ class DeptController extends BaseController
      */
     public function delLeader(Request $request)
     {
-        $res = $this->deptLogic->delLeader($request,$msg);
+        $msg = '';
+        $res = $this->deptLogic->delLeader($request, $msg);
         if (!$res) {
             return $this->error($msg);
         }

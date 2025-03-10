@@ -2,9 +2,6 @@
 
 namespace plugin\eagleadmin\app;
 
-use plugin\eagleadmin\app\model\EgAttachment;
-use plugin\eagleadmin\app\model\EmsAttachment;
-
 class UploadValidator extends BaseValidate
 {
     protected $rule =   [

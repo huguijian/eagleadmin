@@ -125,6 +125,9 @@ class AdminController extends BaseController
             "Cache-Control" => 'max-age=0',])->download(public_path($path), $fileName);
     }
 
+    /**
+     * 刷新token
+     */
     public function refresh()
     {
         $res = JwtToken::refreshToken();

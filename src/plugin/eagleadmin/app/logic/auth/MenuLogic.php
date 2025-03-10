@@ -11,6 +11,13 @@ class MenuLogic extends ILogic
     {
         $this->model = new EgMenu();
     }
+    
+    /**
+     * 获取菜单数据
+     * @param mixed $request
+     * @param mixed $onlyTrashed
+     * @return array
+     */
     public function menu($request,$onlyTrashed=false)
     {
         

@@ -10,6 +10,11 @@ class ConfigLogic extends ILogic
         $this->model = new EgSystemConfig();
     }
 
+    /**
+     * 获取配置列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request)
     {
         $this->whereArr = [
@@ -20,6 +25,11 @@ class ConfigLogic extends ILogic
         return parent::select($request);
     }
 
+    /**
+     * 批量更新
+     * @param mixed $request
+     * @return bool
+     */
     public function batchUpdate($request)
     {
         $params = $request->all();

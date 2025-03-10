@@ -50,6 +50,12 @@ class UserController extends BaseController
         
     }
 
+    /**
+     * 获取用户信息
+     * @param \support\Request $request
+     * @param mixed $model
+     * @return \support\Response
+     */
     public function info(Request $request,$model=null): Response
     {
         $res = $this->userLogic->userInfo($request);
@@ -188,6 +194,11 @@ class UserController extends BaseController
     }
 
 
+    /**
+     * 获取登录用户信息
+     * @param Request $request
+     * @return Response
+     */
     public function loginInfo(Request $request)
     {
         $res = $this->userLogic->loginInfo();

@@ -8,6 +8,14 @@ use Tinywan\Jwt\JwtToken;
 
 class AdminLogic extends ILogic
 {
+    /**
+     * 用户登录
+     * @param mixed $params
+     * @param mixed $data
+     * @param mixed $code
+     * @param mixed $msg
+     * @return bool
+     */
     public function login($params,&$data,&$code,&$msg): bool
     {
 

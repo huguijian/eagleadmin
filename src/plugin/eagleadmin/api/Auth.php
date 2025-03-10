@@ -104,24 +104,4 @@ class Auth
        
         return true;
     }
-
-
-    /**
-     * 是否是超级管理员
-     * @param int $admin_id
-     * @return bool
-     */
-    public static function isSupperAdmin(int $admin_id = 0): bool
-    {
-        if (!$admin_id) {
-            if (!$roles = admin('roles')) {
-                return false;
-            }
-        } else {
-            $roles = EgUserRole::where('user_id', $admin_id)->pluck('role_id');
-        }
-        $rules = EgRole::whereIn('id', $roles)->pluck('rules');
-        return $rules && in_array('*', $rules->toArray());
-    }
-
 }

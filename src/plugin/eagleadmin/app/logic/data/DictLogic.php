@@ -10,6 +10,11 @@ class DictLogic extends ILogic
         $this->model = new EgDict();
     }
 
+    /**
+     * 字典列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request)
     {
         $this->whereArr = [

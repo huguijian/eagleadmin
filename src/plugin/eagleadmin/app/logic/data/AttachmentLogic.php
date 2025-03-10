@@ -10,6 +10,11 @@ class AttachmentLogic extends ILogic
         $this->model = new EgAttachment();
     }
 
+    /**
+     * 附件列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request)
     {
         $getExtensionsByType = function($type) {

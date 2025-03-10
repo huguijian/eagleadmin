@@ -1,9 +1,9 @@
 <?php
 
-namespace plugin\eagleadmin\app\admin\validate\auth;
+namespace plugin\eagleadmin\app\validate\auth;
 
 use plugin\eagleadmin\app\BaseValidate;
-use plugin\eagleadmin\app\model\EmsRole;
+use plugin\eagleadmin\app\model\EgRole;
 
 class RoleValidate extends BaseValidate
 {
@@ -25,9 +25,9 @@ class RoleValidate extends BaseValidate
     public function checkRoleName($value,$rule,$data=[]): bool|string
     {
         if (!empty($data['id'])) {
-            $exists = EmsRole::where("name",$value)->where("id","<>",$data['id'])->exists();
+            $exists = EgRole::where("name",$value)->where("id","<>",$data['id'])->exists();
         }else {
-            $exists = EmsRole::where("name", $value)->exists();
+            $exists = EgRole::where("name", $value)->exists();
         }
 
         if (false!==$exists) {
@@ -38,9 +38,7 @@ class RoleValidate extends BaseValidate
 
     public function sceneEditRole(): RoleValidate
     {
-        return $this->only(['id','name','rules','status'])
-            ->append('id','require')
-            ->append('rules','array');
-
+        return $this->only(['id','name','status'])
+            ->append('id','require');
     }
 }

@@ -10,6 +10,11 @@ class PostLogic extends ILogic
         $this->model = new EgPost();
     }
 
+    /**
+     * 岗位列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request) 
     {
         $createTime = $request->input('create_time');
@@ -24,6 +29,11 @@ class PostLogic extends ILogic
         return parent::select($request);
     }
 
+    /**
+     * 岗位回收站
+     * @param mixed $request
+     * @return array
+     */
     public function recycle($request)
     {
         $createTime = $request->input('create_time');

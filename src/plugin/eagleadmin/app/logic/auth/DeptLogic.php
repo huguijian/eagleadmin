@@ -159,6 +159,4 @@ class DeptLogic extends ILogic
         $res['items'] = $list;
         return $res;
     }
-
-
 }

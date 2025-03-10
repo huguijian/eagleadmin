@@ -2,7 +2,6 @@
 
 namespace plugin\eagleadmin\app;
 
-use plugin\eagleadmin\app\common\Auth;
 use plugin\eagleadmin\app\model\EgUserRole;
 use support\Db;
 use support\exception\BusinessException;

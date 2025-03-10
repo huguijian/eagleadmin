@@ -3,7 +3,7 @@
 namespace plugin\eagleadmin\app\admin\validate\auth;
 
 use plugin\eagleadmin\app\BaseValidate;
-use plugin\eagleadmin\app\model\EmsUser;
+use plugin\eagleadmin\app\model\EgUser;
 
 class UserValidate extends BaseValidate
 {
@@ -36,7 +36,7 @@ class UserValidate extends BaseValidate
 
     public function checkUserName($value,$rule,$data=[]): bool|string
     {
-        $userInfo = EmsUser::where("user_name",$value)->exists();
+        $userInfo = EgUser::where("user_name",$value)->exists();
         if (false!==$userInfo) {
             return '用户名已经存在';
         }

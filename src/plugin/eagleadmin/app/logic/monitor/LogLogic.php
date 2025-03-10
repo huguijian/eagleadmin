@@ -14,7 +14,7 @@ class LogLogic extends ILogic
     }
 
     /**
-     * 日志列表 
+     * 登录日志列表 
      * @param mixed $request
      * @return array
      */
@@ -37,6 +37,11 @@ class LogLogic extends ILogic
         return parent::select($request);
     }
 
+    /**
+     * 操作日志列表
+     * @param mixed $request
+     * @return array
+     */
     public function sysLog($request)
     {
         $this->model = $this->egOperateLog; 

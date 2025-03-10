@@ -12,6 +12,11 @@ class DictCategoryLogic extends ILogic
     }
 
 
+    /**
+     * 字典分类列表
+     * @param mixed $request
+     * @return array
+     */
     public function select($request)
     {
         $this->whereArr = [
@@ -22,6 +27,10 @@ class DictCategoryLogic extends ILogic
         return parent::select($request);
     }
 
+    /**
+     * 字典数据
+     * @param mixed $request
+     */
     public function data($request)
     {
         $code = $request->input('code');
@@ -30,6 +39,10 @@ class DictCategoryLogic extends ILogic
         return $data;
     }
 
+    /**
+     * 字典所有数据
+     * @return array
+     */
     public function dictAll()
     {
         $dcs = EgDictCategory::where('status', 1)->get();
