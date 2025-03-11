@@ -71,7 +71,6 @@ class AdminLogic extends ILogic
         //        if (strtolower($verifyCode)!=strtolower($tmp)) {
         //            throw new BusinessException("验证码错误",[],500);
         //        }
-
         $token = JwtToken::generateToken([
             'id' => $userInfo['id'],
             'user_name' => $userInfo['user_name'],
