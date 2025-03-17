@@ -7,5 +7,5 @@ use support\Model;
 
 class Base extends Model
 {
-
+    protected $connection = 'plugin.eagleadmin.mysql';
 }
