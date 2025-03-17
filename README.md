@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://svg.hamm.cn/badge.svg?key=License&value=MIT" />
-  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=3.x" />
+  <img src="https://svg.hamm.cn/badge.svg?key=Version&value=1.x" />
 </p>
 
 <div style="padding:18px;max-width: 1024px;margin:0 auto;background-color:#fff;color:#333">
