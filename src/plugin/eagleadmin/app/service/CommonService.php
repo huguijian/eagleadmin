@@ -21,14 +21,14 @@ class CommonService
             $file = $params['file'];
             $size = $file->getSize();
             $ext = $file->getUploadExtension();
-            $type = empty($app)?:'common';
+            $app = empty($app)?:'common';
 
             $filesystem = FilesystemFactory::get('public');
             $stream = fopen($file->getRealPath(), 'r+');
 
             $md5 = md5_file($file->getRealPath());
 
-            $path = '/upload/' . $type . '/' . $md5 . '.' . $ext;
+            $path = '/upload/' . $app . '/' . $md5 . '.' . $ext;
 
             // 文件已存在直接返回
             $fileInfo = EgAttachment::where('md5_file', $md5)
@@ -53,7 +53,7 @@ class CommonService
                 'ext' => $ext,
                 'path' => $path,
                 'size' => $size,
-                'type' => $type,
+                'app' => $app,
             ]);
 
         } catch(\Exception $e) {
