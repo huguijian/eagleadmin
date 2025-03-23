@@ -4,7 +4,7 @@
  * @author 胡贵建
  * @version 1.0
  */
-namespace Plugin\eagleadmin\app\logic;
+namespace plugin\eagleadmin\app\logic;
 use plugin\eagleadmin\app\Crud;
 abstract class ILogic
 {
