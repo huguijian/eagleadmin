@@ -317,7 +317,7 @@ trait Crud
      */
     public function update(Request $request)
     {
-        if ($request->method() == "POST") {
+        if ($request->method() == "POST" || $request->method() == "PUT") {
             [$id, $data] = $this->updateInput($request);
             // 调用doUpdate方法并检查返回值是否为true
             if (!$this->doUpdate($id, $data)) {
