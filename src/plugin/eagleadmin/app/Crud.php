@@ -315,7 +315,7 @@ trait Crud
      * @throws \support\exception\BusinessException
      * @return array{row: mixed|bool}
      */
-    public function update($request)
+    public function update(Request $request)
     {
         if ($request->method() == "POST") {
             [$id, $data] = $this->updateInput($request);
