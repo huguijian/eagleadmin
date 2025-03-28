@@ -30,6 +30,9 @@ class DictCategoryController extends BaseController
     }
 
 
+    
+
+
     /**
      * 添加字典分类
      * @param \support\Request $request

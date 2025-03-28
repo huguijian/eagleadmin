@@ -2,6 +2,8 @@
 namespace plugin\eagleadmin\app\logic\data;
 use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgDictCategory;
+use support\Db;
+use plugin\eagleadmin\app\model\EgDict;
 
 class DictCategoryLogic extends ILogic
 {
@@ -25,6 +27,29 @@ class DictCategoryLogic extends ILogic
             ['field'=>'status','opt'=>'like','val'=>$request->input('status')],
         ];
         return parent::select($request);
+    }
+
+     /**
+     * 更新字典分类
+     * @param mixed $request
+     * @return bool|int
+     */
+    public function update($request)
+    {
+        try {
+            Db::beginTransaction();
+            $params = $request->all();
+            $id = $request->input('id');
+            $res = EgDictCategory::where('id', $id)->update($params);
+            EgDict::where('category_id', $id)->update([
+                'dict_code' => $params['dict_code'],
+            ]);
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollBack();
+            throw $e;
+        }
+        return $res;
     }
 
     /**
