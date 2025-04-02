@@ -51,6 +51,13 @@ trait Crud
      */
     protected $callBack = null;
 
+
+    /**
+     * 自定义查询条件回调处理
+     * @var 
+     */
+    protected $whereCallBack = null;
+
     /**
      * 关联关系搜索条件
      *
@@ -213,6 +220,10 @@ trait Crud
             }
         }
 
+    
+        if ($this->whereCallBack && is_callable($this->whereCallBack)) {
+            $model = call_user_func($this->whereCallBack,$model);
+        }
 
         if ($order && strpos($order,",")) {
             $order = explode(",",$order);
