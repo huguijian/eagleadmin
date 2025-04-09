@@ -12,6 +12,7 @@
     "illuminate/events": "^10.48",
     "symfony/var-dumper": "^6.4",
     "gregwar/captcha": "^1.2",
+    "webman/redis": "^2.1",
     "illuminate/redis": "^10.48",
     "topthink/think-validate": "^2.0",
     "tinywan/jwt": "^1.6",
