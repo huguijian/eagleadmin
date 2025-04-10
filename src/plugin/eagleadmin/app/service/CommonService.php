@@ -21,7 +21,6 @@ class CommonService
             $file = $params['file'];
             $size = $file->getSize();
             $ext = $file->getUploadExtension();
-            $app = empty($app)?:'common';
 
             $filesystem = FilesystemFactory::get('public');
             $stream = fopen($file->getRealPath(), 'r+');
@@ -54,6 +53,7 @@ class CommonService
                 'path' => $path,
                 'size' => $size,
                 'app' => $app,
+                'storage_mode' => 1,
             ]);
 
         } catch(\Exception $e) {

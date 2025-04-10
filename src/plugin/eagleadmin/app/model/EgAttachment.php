@@ -26,14 +26,7 @@ class EgAttachment extends Base
      */
     public $timestamps = false;
 
-    protected $fillable = [
-        'file_name',
-        'md5_file',
-        'path',
-        'size',
-        'ext',
-        'type'
-    ];
+    protected $guarded = ['id','create_time','update_time'];
 
     const TYPE = [
         'common' => 0,

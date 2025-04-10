@@ -22,7 +22,7 @@ class CommonController extends BaseController
             'ext'  => $params['file']->getUploadExtension(),
             'type' => $params['type'] ?? '',
         ]);
-        $fileInfo = (new CommonService())->upload($params,$params['app']??'');
+        $fileInfo = (new CommonService())->upload($params,$params['app']??'eagleadmin');
         $fileInfo = collect($fileInfo)->toArray();
         if ($fileInfo) {
             return $this->success($fileInfo, '上传成功!');
