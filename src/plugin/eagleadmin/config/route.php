@@ -112,5 +112,8 @@ Route::group('/core', function () {
    Route::any('/tool/crontab/destroy', [plugin\eagleadmin\app\controller\tool\CrontabController::class,'destroy']);
    Route::any('/tool/crontab/run', [plugin\eagleadmin\app\controller\tool\CrontabController::class,'run']);
 
+   //文件上传
+   Route::any('/common/upload', [plugin\eagleadmin\app\controller\CommonController::class,'upload']);
+
 });
 Route::disableDefaultRoute('eagleadmin');
