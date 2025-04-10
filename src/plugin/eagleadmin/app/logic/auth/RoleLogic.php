@@ -111,7 +111,7 @@ class RoleLogic extends ILogic
      */
     public function updateDataPermission($request)
     {
-        $id = $request->input('id');
+        $id = $request->get('id');
         $dataScope = $request->input('data_scope');
         try {
             Db::beginTransaction();

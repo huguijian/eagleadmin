@@ -80,11 +80,10 @@ class RoleController extends BaseController
 
     /**
      * 数据权限
-     * @param mixed $id
      */
-    public function updateDataPermission($id)
+    public function updateDataPermission(Request $request)
     {
-        $this->roleLogic->updateDataPermission($id);
+        $this->roleLogic->updateDataPermission($request);
         return $this->success([], '保存成功！');
     }
 
