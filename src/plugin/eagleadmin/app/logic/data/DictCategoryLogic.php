@@ -78,7 +78,7 @@ class DictCategoryLogic extends ILogic
                 $dict[$key]['label'] = $val['dict_name'];
                 $dict[$key]['value'] = $val['dict_value'];
             }
-            $res[$dc['code']] = $dict;
+            $res[$dc['dict_code']] = $dict;
         }
         return $res;
     }
