@@ -34,7 +34,6 @@ class Middleware implements MiddlewareInterface
 
             $whiteList = config('plugin.eagleadmin.eagleadmin.white_list', []);
             $rule = trim(strtolower($request->path()));
-            $rule = str_replace('/app/eagleadmin', '', $rule);
             if (!in_array($rule,$whiteList)) {
                 Event::dispatch('user.operateLog',[]);
             }

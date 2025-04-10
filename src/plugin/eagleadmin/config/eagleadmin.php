@@ -2,7 +2,7 @@
 return [
     // 中间件白名单
     'white_list' => [
-        '/admin/login',
-        '/admin/get-captcha'
+        '/core/admin/login',
+        '/core/admin/get-captcha'
     ],
 ];
