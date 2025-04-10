@@ -59,7 +59,7 @@ class DictCategoryLogic extends ILogic
     public function data($request)
     {
         $code = $request->input('code');
-        $category = EgDictCategory::where('code', $code)->first();
+        $category = EgDictCategory::where('dict_code', $code)->first();
         $data = $category->dict ?? [];
         return $data;
     }
