@@ -11,7 +11,7 @@ use plugin\eagleadmin\app\model\EgUser;
 class UserController extends BaseController
 {
 
-    protected $noNeedAuth = ['loginInfo'];
+    protected $noNeedAuth = ['loginInfo','savePersonal','modifyPassword'];
 
     private $userLogic;
     public function __construct()
@@ -73,6 +73,17 @@ class UserController extends BaseController
     {
         $res = $this->userLogic->update($request);
         return $this->success($res, '更新成功！');
+    }
+
+
+    /**
+     * 保存个人信息
+     * @param \support\Request $request
+     */
+    public function savePersonal(Request $request)
+    {
+        $res = $this->userLogic->update($request);
+        return $this->success($res, '保存成功！');
     }
 
 
