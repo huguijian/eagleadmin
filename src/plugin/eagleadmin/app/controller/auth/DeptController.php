@@ -116,6 +116,16 @@ class DeptController extends BaseController
     }
 
     /**
+     * 删除部门
+     * @param \support\Request $request
+     */
+    public function delete(Request $request)
+    {
+        $this->deptLogic->delete($request);
+        return $this->success([],'删除成功');
+    }
+
+    /**
      * 销毁删除部门
      * @param Request $request
      * @return Response

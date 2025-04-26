@@ -43,6 +43,7 @@ Route::group('/core', function () {
     Route::any('/auth/user/modifypassword', [plugin\eagleadmin\app\controller\auth\UserController::class,'modifyPassword']);
     Route::any('/auth/user/change-status', [plugin\eagleadmin\app\controller\auth\UserController::class,'changeStatus']);
     Route::any('/auth/user/getUserInfoByIds', [plugin\eagleadmin\app\controller\auth\UserController::class,'getUserInfoByIds']);
+    Route::any('/auth/user/savepersonal', [plugin\eagleadmin\app\controller\auth\UserController::class,'savePersonal']);
 
     //附件管理
     Route::any('/data/attachment/select', [plugin\eagleadmin\app\controller\data\AttachmentController::class,'select']);
@@ -59,6 +60,8 @@ Route::group('/core', function () {
     Route::any('/auth/dept/leaders', [plugin\eagleadmin\app\controller\auth\DeptController::class,'leaders']);
     Route::any('/auth/dept/delLeader', [plugin\eagleadmin\app\controller\auth\DeptController::class,'delLeader']);
     Route::any('/auth/dept/addLeader', [plugin\eagleadmin\app\controller\auth\DeptController::class,'addLeader']);
+    Route::any('/auth/dept/delete', [plugin\eagleadmin\app\controller\auth\DeptController::class,'delete']);
+    Route::any('/auth/dept/real-destroy', [plugin\eagleadmin\app\controller\auth\DeptController::class,'realDestroy']);
 
     //字典管理
     Route::any('/data/dict/select', [plugin\eagleadmin\app\controller\data\DictController::class,'select']);
