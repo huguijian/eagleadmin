@@ -59,7 +59,7 @@ class UserLogic extends ILogic
         // 获取用户的角色列表
         $roles = optional($user)->roles;
 
-        return $roles ? $roles->pluck('name')->toArray() : [];
+        return $roles ? $roles->pluck('code')->toArray() : [];
     }
 
 
