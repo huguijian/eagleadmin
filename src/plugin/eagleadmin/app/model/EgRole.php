@@ -58,7 +58,4 @@ class EgRole extends Base
             'dept_id',
         );
     }
-
-
-
 }
