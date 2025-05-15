@@ -12,4 +12,9 @@ class EgSystemConfig extends Base
     protected $table = 'eg_system_config';
 
     public $timestamps = false;
+
+    public function groupInfo()
+    {
+        return $this->hasOne(EgSystemConfigGroup::class, 'id', 'group_id');
+    }
 }

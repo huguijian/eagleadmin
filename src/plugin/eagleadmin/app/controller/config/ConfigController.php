@@ -80,4 +80,15 @@ class ConfigController extends BaseController
     {
         return $this->success([],'清除成功');
     }
+
+    /**
+     * 获取配置
+     * @param \support\Request $request
+     */
+    public function getConfig(Request $request)
+    {
+        $groupCode = $request->input('groupCode');
+        $res = $this->configLogic->getConfig($groupCode);
+        return $this->success($res);
+    }
 }

@@ -105,6 +105,7 @@ Route::group('/core', function () {
     Route::any('/config/config-group/update', [plugin\eagleadmin\app\controller\config\ConfigGroupController::class,'update']);
     Route::any('/config/config-group/insert', [plugin\eagleadmin\app\controller\config\ConfigGroupController::class,'insert']);
     Route::any('/config/config-group/delete', [plugin\eagleadmin\app\controller\config\ConfigGroupController::class,'delete']);
+    Route::any('/system/getconfig', [plugin\eagleadmin\app\controller\config\ConfigController::class,'getconfig']);
    //定时任务
    Route::any('/tool/crontab/select', [plugin\eagleadmin\app\controller\tool\CrontabController::class,'select']);
    Route::any('/tool/crontab/update', [plugin\eagleadmin\app\controller\tool\CrontabController::class,'update']);
@@ -117,6 +118,10 @@ Route::group('/core', function () {
 
    //文件上传
    Route::any('/common/upload', [plugin\eagleadmin\app\controller\CommonController::class,'upload']);
+   //大文件断点续传
+   Route::any('/common/checkFile', [plugin\eagleadmin\app\controller\CommonController::class, 'checkFile']);
+   Route::any('/common/uploadChunks', [plugin\eagleadmin\app\controller\CommonController::class, 'uploadChunks']);
+   Route::any('/common/mergeChunks', [plugin\eagleadmin\app\controller\CommonController::class, 'mergeChunks']);
 
 });
 Route::disableDefaultRoute('eagleadmin');
