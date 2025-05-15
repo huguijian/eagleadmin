@@ -24,7 +24,7 @@ class UserLogic extends ILogic
     public function getAllMenus(): array
     {
         $allMenus = EgMenu::where(['type' => ['M','I','L']])
-            ->orderBy('sort', 'desc')
+            ->orderBy('sort', 'asc')
             ->get()
             ->all();
         return Helper::makeArcoMenus($allMenus);

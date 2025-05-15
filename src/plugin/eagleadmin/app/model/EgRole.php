@@ -46,7 +46,7 @@ class EgRole extends Base
             EgRoleMenu::class,
             'role_id',
             'menu_id',
-        );
+        )->orderBy('sort', 'asc');
     }
 
     public function depts()
