@@ -56,7 +56,7 @@ trait Crud
      * 自定义查询条件回调处理
      * @var 
      */
-    protected $whereCallBack = null;
+    protected $whereCallBack = [];
 
     /**
      * 关联关系搜索条件
@@ -106,6 +106,7 @@ trait Crud
             $list = $paginator->items() ?? [];
             $res['total'] = $paginator->total();
         }
+
         if ($this->callBack && is_callable($this->callBack)) {
             $list = call_user_func($this->callBack, $list) ?? [];
         }
@@ -220,9 +221,11 @@ trait Crud
             }
         }
 
-    
-        if ($this->whereCallBack && is_callable($this->whereCallBack)) {
-            $model = call_user_func($this->whereCallBack,$model);
+        $callbacks = is_array($this->whereCallBack) ? $this->whereCallBack : [$this->whereCallBack];
+        foreach ($callbacks as $callback) {
+            if (is_callable($callback)) {
+                call_user_func($callback, $model);
+            }
         }
 
         if ($order && strpos($order,",")) {
