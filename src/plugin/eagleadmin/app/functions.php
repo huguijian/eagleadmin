@@ -41,7 +41,7 @@ if (!function_exists("admin_id")) {
     }
 }
 
-if (function_exists("get_mini_config")) {
+if (!function_exists("get_mini_config")) {
     function get_mini_config(): array
     {
         return [
