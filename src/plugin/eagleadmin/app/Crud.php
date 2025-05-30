@@ -297,7 +297,7 @@ trait Crud
         }
 
         $table = $this->model->getTable();
-        $allow_column = Db::select("desc `$table`");
+        $allow_column = $this->model->getConnection()->select("desc `$table`");
         if (!$allow_column) {
             throw new BusinessException('表不存在', 2);
         }
@@ -469,7 +469,7 @@ trait Crud
         $page_size = $request->get('limit', 10);
         $this->pageSize = $page_size;
         $table = $this->model->getTable();
-        $allow_column = Db::select("desc `$table`");
+        $allow_column = $this->model->getConnection()->select("desc `$table`");
         if (!$allow_column) {
             throw new BusinessException("表不存在");
         }
@@ -484,18 +484,18 @@ trait Crud
                     case EgRole::DATA_SCOPE['全部数据权限']:
                         return [$where, $page_size, $order]; 
                     case EgRole::DATA_SCOPE['自定义数据权限']:
-                        $deptIds = Db::table('eg_role_dept')->where('role_id', $roleInfo['role_id'])->pluck('dept_id')->toArray();
-                        $uid = Db::table('eg_user')->where('dept_id', 'in', $deptIds)->pluck('id')->toArray();
+                        $deptIds = Db::connection('plugin.eagleadmin.mysql')->table('eg_role_dept')->where('role_id', $roleInfo['role_id'])->pluck('dept_id')->toArray();
+                        $uid = Db::connection('plugin.eagleadmin.mysql')->table('eg_user')->where('dept_id', 'in', $deptIds)->pluck('id')->toArray();
                         $userIds = array_merge($userIds, $uid);
                         break;
                     case EgRole::DATA_SCOPE['本部门数据权限']:
-                        $uid = Db::table('eg_user')->where('dept_id',admin('dept_id'))->pluck('id')->toArray();
+                        $uid = Db::connection('plugin.eagleadmin.mysql')->table('eg_user')->where('dept_id',admin('dept_id'))->pluck('id')->toArray();
                         $userIds = array_merge($userIds, $uid);
                         break;
                     case EgRole::DATA_SCOPE['本部门及以下数据权限']:
-                        $deptData = Db::table('eg_dept')->where('parent_id',admin('dept_id'))->get()->toArray();
+                        $deptData = Db::connection('plugin.eagleadmin.mysql')->table('eg_dept')->where('parent_id',admin('dept_id'))->get()->toArray();
                         $deptIds = Helper::getChildrenIds($deptData,admin('dept_id'));
-                        $uid = Db::table('eg_user')->where('dept_id', 'in', $deptIds)->pluck('id')->toArray();
+                        $uid = Db::connection('plugin.eagleadmin.mysql')->table('eg_user')->where('dept_id', 'in', $deptIds)->pluck('id')->toArray();
                         $userIds = array_merge($userIds, $uid);
                         break;
                     case EgRole::DATA_SCOPE['仅本人数据权限']:
