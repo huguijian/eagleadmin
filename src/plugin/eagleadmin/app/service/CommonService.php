@@ -61,4 +61,49 @@ class CommonService
             throw $e;
         }
     }
+
+     /**
+     * 自定义上传
+     * @param mixed $params
+     * @param mixed $app
+     * @return object|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|\support\Model
+     */
+    public function customUpload($params,$dir='')
+    {
+        try {
+            $dir = rtrim($dir,'/').'/';
+            $file = $params['file'];
+            $size = $file->getSize();
+            $ext = $file->getUploadExtension();
+            $name = $file->getUploadName();
+            $md5 = md5_file($file->getRealPath());
+            $path = $dir.$name;
+
+            // 文件已存在直接返回
+            $fileInfo = EgAttachment::where('md5_file', $md5)
+                ->first();
+            if ($fileInfo && file_exists($fileInfo['path'])) {
+                return $fileInfo;
+            }
+
+            if ($file && $file->isValid()) {
+                $file->move($path);
+            }
+
+            // 入库
+            return EgAttachment::create([
+                'file_name' => $name,
+                'md5_file' => $md5,
+                'ext' => $ext,
+                'path' => $path,
+                'url'  => $path,
+                'size' => $size,
+                'storage_mode' => 1,
+            ]);
+
+        } catch(\Exception $e) {
+            Log::error("文件上传失败！". $e->getMessage());
+            throw $e;
+        }
+    }
 }
