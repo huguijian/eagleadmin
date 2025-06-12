@@ -1,11 +1,10 @@
 <?php
 namespace plugin\eagleadmin\api;
-use plugin\eagleadmin\app\model\EgRole;
-use plugin\eagleadmin\app\model\EgUserRole;
 use support\exception\BusinessException;
 use \Tinywan\Jwt\JwtToken;
 use plugin\eagleadmin\app\logic\auth\UserLogic;
 use plugin\eagleadmin\app\model\EgUser;
+use Webman\Http\Response;
 /**
  * 对外提供的鉴权接口
  */
@@ -34,10 +33,9 @@ class Auth
      * @param string $action
      * @param int $code
      * @param string $msg
-     * @return bool
-     * @throws \ReflectionException|BusinessException
+     * @return bool|Response
      */
-    public static function canAccess(string $controller, string $action, int &$code = 0, string &$msg = ''): bool
+    public static function canAccess(string $controller, string $action, int &$code = 0, string &$msg = '') 
     {
         // 无控制器信息说明是函数调用，函数不属于任何控制器，鉴权操作应该在函数内部完成。
         if (!$controller) {
@@ -54,6 +52,7 @@ class Auth
             return true;
         }
 
+        $httpStatusCode = 200;
         try {
             // 支持url传token
             $token = request()->input('token');
@@ -67,18 +66,33 @@ class Auth
         } catch (\Tinywan\Jwt\Exception\JwtTokenException $exception) {//token验证失败
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
-            $code = 401;
-            return false;
+            $code = $httpStatusCode = 401;
+            $response = ['code' => $code, 'msg' => $msg, 'type' => 'error'];
+            return new Response(
+                $httpStatusCode,
+                ['Content-Type' => 'application/json'],
+                json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+            );
         } catch (\Tinywan\Jwt\Exception\JwtTokenExpiredException $exception) {//token过期
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
-            $code = 401;
-            return false;
+            $code = $httpStatusCode = 401;
+            $response = ['code' => $code, 'msg' => $msg, 'type' => 'error'];
+            return new Response(
+                $httpStatusCode,
+                ['Content-Type' => 'application/json'],
+                json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+            );
         } catch (\Tinywan\Jwt\Exception\JwtRefreshTokenExpiredException $exception) {//提交的刷新token验证失败
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
-            $code = 403;
-            return false;
+            $code = $httpStatusCode = 403;
+            $response = ['code' => $code, 'msg' => $msg, 'type' => 'error'];
+            return new Response(
+                $httpStatusCode,
+                ['Content-Type' => 'application/json'],
+                json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+            );
         }
 
         // 不需要鉴权
