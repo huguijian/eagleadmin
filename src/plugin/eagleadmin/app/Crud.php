@@ -179,6 +179,16 @@ trait Crud
                         }
                     );
                 }
+
+                // 自定义关联查询
+                if (isset($li['relation_name']) && isset($li['callBack']) && is_callable($li['callBack'])) {
+                    $model->whereHas(
+                        $li['relation_name'],
+                        function($query) use ($li) {
+                            call_user_func($li['callBack'], $query);
+                        }
+                    );
+                }
             }
         }
 
