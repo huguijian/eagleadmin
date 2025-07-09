@@ -35,7 +35,7 @@ class Auth
      * @param string $msg
      * @return bool|Response
      */
-    public static function canAccess(string $controller, string $action, int &$code = 0, string &$msg = '') 
+    public static function canAccess(string $controller, string $action, int &$httpStatus = 200,int &$code = 0, string &$msg = '') 
     {
         // 无控制器信息说明是函数调用，函数不属于任何控制器，鉴权操作应该在函数内部完成。
         if (!$controller) {
@@ -52,7 +52,7 @@ class Auth
             return true;
         }
 
-        $httpStatusCode = 200;
+        $httpStatus = 200;
         try {
             // 支持url传token
             $token = request()->input('token');
@@ -66,33 +66,20 @@ class Auth
         } catch (\Tinywan\Jwt\Exception\JwtTokenException $exception) {//token验证失败
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
-            $code = $httpStatusCode = 401;
-            $response = ['code' => $code, 'msg' => $msg, 'type' => 'error'];
-            return new Response(
-                $httpStatusCode,
-                ['Content-Type' => 'application/json'],
-                json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-            );
+            $code = $httpStatus = 401;
+            return false;
+            
         } catch (\Tinywan\Jwt\Exception\JwtTokenExpiredException $exception) {//token过期
+            
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
-            $code = $httpStatusCode = 401;
-            $response = ['code' => $code, 'msg' => $msg, 'type' => 'error'];
-            return new Response(
-                $httpStatusCode,
-                ['Content-Type' => 'application/json'],
-                json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-            );
+            $code = $httpStatus = 401;
+            return false;
         } catch (\Tinywan\Jwt\Exception\JwtRefreshTokenExpiredException $exception) {//提交的刷新token验证失败
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
-            $code = $httpStatusCode = 403;
-            $response = ['code' => $code, 'msg' => $msg, 'type' => 'error'];
-            return new Response(
-                $httpStatusCode,
-                ['Content-Type' => 'application/json'],
-                json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-            );
+            $code = $httpStatus = 403;
+            return false;
         }
 
         // 不需要鉴权

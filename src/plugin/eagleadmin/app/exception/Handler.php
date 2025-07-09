@@ -15,9 +15,6 @@
 namespace plugin\eagleadmin\app\exception;
 
 use Throwable;
-use Tinywan\Jwt\Exception\JwtTokenException;
-use Tinywan\Jwt\Exception\JwtRefreshTokenExpiredException;
-
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\Exception\ExceptionHandler;
@@ -51,10 +48,7 @@ class Handler extends ExceptionHandler
         } elseif (($exception instanceof BusinessException) && ($response = $exception->render($request))) {
             $httpStatus = 200;
             return $response;
-        } elseif(($exception instanceof JwtTokenException || $exception instanceof JwtRefreshTokenExpiredException)) {
-            $httpStatus = 401;
-        }
-
+        } 
 
         $code = $exception->getCode();
         $json = ['code' => $code ? $code : 500, 'msg' => $this->_debug ? $exception->getMessage() : 'Server internal error', 'type' => 'failed'];

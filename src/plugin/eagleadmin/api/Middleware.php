@@ -27,11 +27,11 @@ class Middleware implements MiddlewareInterface
         $action = $request->action;
 
         $code = 0;
+        $httpStatus = 200;
         $msg = '';
-        if (!Auth::canAccess($controller, $action, $code, $msg)) {
-            $response = json(['code' => $code, 'msg' => $msg, 'type' => 'error']);
+        if (!Auth::canAccess($controller, $action,$httpStatus,$code, $msg)) {
+            $response = response(json_encode(['code' => $code, 'msg' => $msg, 'type' => 'error']),$httpStatus);
         } else {
-
             $whiteList = config('plugin.eagleadmin.eagleadmin.white_list', []);
             $rule = trim(strtolower($request->path()));
             if (!in_array($rule,$whiteList)) {
