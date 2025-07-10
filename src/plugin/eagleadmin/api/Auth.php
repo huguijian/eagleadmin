@@ -5,6 +5,8 @@ use \Tinywan\Jwt\JwtToken;
 use plugin\eagleadmin\app\logic\auth\UserLogic;
 use plugin\eagleadmin\app\model\EgUser;
 use Webman\Http\Response;
+use Webman\Event\Event;
+
 /**
  * 对外提供的鉴权接口
  */
@@ -80,6 +82,12 @@ class Auth
             $msg = $exception->getMessage();
             $code = $httpStatus = 403;
             return false;
+        }
+
+        $whiteList = config('plugin.eagleadmin.eagleadmin.white_list', []);
+        $rule = trim(strtolower(request()->path()));
+        if (!in_array($rule,$whiteList)) {
+            Event::dispatch('user.operateLog',[]);
         }
 
         // 不需要鉴权
