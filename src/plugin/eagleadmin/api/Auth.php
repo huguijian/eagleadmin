@@ -12,6 +12,8 @@ use Webman\Event\Event;
  */
 class Auth
 {
+    const ACCESS_TOKEN = 1;
+    const REFRESH_TOKEN = 2;
     /**
      * 判断权限
      * 如果没有权限则抛出异常
@@ -58,12 +60,18 @@ class Auth
         try {
             // 支持url传token
             $token = request()->input('token');
+            if($action=='refreshToken'){
+                $tokenType = self::REFRESH_TOKEN;
+            }else{
+                $tokenType = self::ACCESS_TOKEN;
+            }
             if ($token) {
                 $token = str_replace('Bearer ', '', $token);
-                $tokenInfo = JwtToken::verify(1, $token);
+                $tokenInfo = JwtToken::verify($tokenType, $token);
                 $accessUserId = $tokenInfo['extend']['id'] ?? 0;
             } else {
-                $accessUserId = JwtToken::getCurrentId();
+                $tokenInfo = JwtToken::verify($tokenType);
+                $accessUserId = $tokenInfo['extend']['id'] ?? 0;
             }
         } catch (\Tinywan\Jwt\Exception\JwtTokenException $exception) {//token验证失败
             // 返回自己自定义的message格式
@@ -72,15 +80,9 @@ class Auth
             return false;
             
         } catch (\Tinywan\Jwt\Exception\JwtTokenExpiredException $exception) {//token过期
-            
             // 返回自己自定义的message格式
             $msg = $exception->getMessage();
             $code = $httpStatus = 401;
-            return false;
-        } catch (\Tinywan\Jwt\Exception\JwtRefreshTokenExpiredException $exception) {//提交的刷新token验证失败
-            // 返回自己自定义的message格式
-            $msg = $exception->getMessage();
-            $code = $httpStatus = 403;
             return false;
         }
 

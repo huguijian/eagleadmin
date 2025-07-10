@@ -37,24 +37,18 @@ class Handler extends ExceptionHandler
 
     public function render(Request $request, Throwable $exception): Response
     {
-        $code = $exception->getCode();
-        $httpStatus = 500;
-        if ($exception instanceof ValidateException) {
-            $json = ['code' => $code ? $code : -1, 'msg' =>  $exception->getMessage(), 'type' => 'failed'];
-            $httpStatus = 200;
-            return new Response($httpStatus, ['Content-Type' => 'application/json'],
-                \json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-
-        } elseif (($exception instanceof BusinessException) && ($response = $exception->render($request))) {
-            $httpStatus = 200;
+        if (method_exists($exception, 'render') && ($response = $exception->render($request))) {
             return $response;
-        } 
-
+        }
         $code = $exception->getCode();
-        $json = ['code' => $code ? $code : 500, 'msg' => $this->_debug ? $exception->getMessage() : 'Server internal error', 'type' => 'failed'];
-        $this->_debug && $json['traces'] = \nl2br((string)$exception);
-        return new Response($httpStatus, ['Content-Type' => 'application/json'],
-                \json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        if ($request->expectsJson()) {
+            $json = ['code' => $code ?: 500, 'msg' => $this->debug ? $exception->getMessage() : 'Server internal error'];
+            $this->debug && $json['traces'] = (string)$exception;
+            return new Response(200, ['Content-Type' => 'application/json'],
+                json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        }
+        $error = $this->debug ? nl2br((string)$exception) : 'Server internal error';
+        return new Response(500, [], $error);
     }
 
 
