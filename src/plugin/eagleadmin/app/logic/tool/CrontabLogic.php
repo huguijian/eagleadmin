@@ -2,7 +2,7 @@
 
 namespace plugin\eagleadmin\app\logic\tool;
 
-use Plugin\eagleadmin\app\logic\ILogic;
+use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgCrontab;
 use plugin\eagleadmin\app\model\EgCrontabLog;
 use GuzzleHttp\Client;
