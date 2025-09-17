@@ -109,7 +109,7 @@ class Auth
       
         if (!in_array($currentPath, $codes)) {
             $msg = '无权限';
-            $code = 2;
+            $code = $httpStatus = 403;
             return false;
         }
        
