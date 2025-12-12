@@ -43,7 +43,7 @@ class AdminController extends BaseController
         $isLogin = $this->adminLogic->login($params, $data, $code, $msg);
         //登录事件
         Event::dispatch('user.login', [
-            'user_name' => $params['username'],
+            'user_name' => $params['user_name'],
             'status' => $code,
             'msg' => $msg
         ]);

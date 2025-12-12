@@ -19,13 +19,13 @@ class AdminLogic extends ILogic
     public function login($params,&$data,&$code,&$msg): bool
     {
 
-        $username  = $params["username"]??"";
+        $userName  = $params["user_name"]??"";
         $password  = $params["password"]??"";
         $captcha   = $params["code"]??"";
         $captchaId   = $params["captcha_id"]??"";
         //模型打印sql语句
         //Db::connection()->enableQueryLog();
-        $userInfo = EgUser::with('department')->where('user_name', $username)->first();
+        $userInfo = EgUser::with('department')->where('user_name', $userName)->first();
         //var_dump(Db::getQueryLog());
 
         $code = 1;

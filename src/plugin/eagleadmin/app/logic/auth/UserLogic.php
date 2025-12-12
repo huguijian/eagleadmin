@@ -95,19 +95,19 @@ class UserLogic extends ILogic
     {
         $userInfo = EgUser::where('id',admin_id())->first()->makeVisible('password');
         $userInfo = collect($userInfo)->toArray();
-        if (!password_verify($params['oldPassword'], $userInfo["password"])) {
+        if (!password_verify($params['old_password'], $userInfo["password"])) {
             $code = -1;
             $msg  = "密码错误!";
             return false;
         }
 
-        if ($params['newPassword']!=$params['newPassword_confirmation']) {
+        if ($params['new_password']!=$params['new_password_confirmation']) {
             $code = -1;
             $msg  = "两次密码不一致!";
             return false;
         }
 
-        $password = password_hash($params['newPassword'], PASSWORD_BCRYPT, ["cost" => 12]);
+        $password = password_hash($params['new_password'], PASSWORD_BCRYPT, ["cost" => 12]);
         EgUser::where('id', admin_id())->update(['password' => $password]);
         return true;
     }
