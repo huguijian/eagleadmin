@@ -2,11 +2,7 @@
 
 namespace plugin\eagleadmin\app\logic;
 
-<<<<<<< HEAD
-use Plugin\eagleadmin\app\logic\ILogic;
-=======
 use plugin\eagleadmin\app\logic\ILogic;
->>>>>>> d71648c (init)
 use plugin\eagleadmin\app\model\EgUser;
 use Tinywan\Jwt\JwtToken;
 
