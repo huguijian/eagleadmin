@@ -6,6 +6,9 @@ use plugin\eagleadmin\app\BaseController;
 use plugin\eagleadmin\app\logic\config\ConfigLogic;
 use support\Request;
 
+/**
+ * 配置管理
+ */
 class ConfigController extends BaseController
 {
 
