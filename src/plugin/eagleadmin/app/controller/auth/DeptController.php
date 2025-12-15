@@ -6,7 +6,9 @@ use plugin\eagleadmin\app\model\EgDept;
 use support\Request;
 use support\Response;
 
-
+/**
+ * 部门管理
+ */
 class DeptController extends BaseController
 {
     private $deptLogic;
@@ -15,8 +17,6 @@ class DeptController extends BaseController
     {
         $this->deptLogic = new DeptLogic();
     }
-
-
 
     /**
      * 部门列表

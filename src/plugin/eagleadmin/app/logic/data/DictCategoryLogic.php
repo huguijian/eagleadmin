@@ -9,7 +9,10 @@ class DictCategoryLogic extends ILogic
 {
     public function __construct()
     {
+<<<<<<< HEAD
 
+=======
+>>>>>>> d71648c (init)
         $this->model = new EgDictCategory();
     }
 
