@@ -2,7 +2,7 @@
 namespace Huguijian\Eagleadmin;
 
 /**
- * 安装
+ * 安装脚本
  */
 class Install
 {
