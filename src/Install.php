@@ -66,8 +66,7 @@ class Install
             if (!is_dir($path) && !is_file($path)) {
                 continue;
             }
-            echo "Remove $dest
-";
+            echo "Remove $dest";
             if (is_file($path) || is_link($path)) {
                 unlink($path);
                 continue;

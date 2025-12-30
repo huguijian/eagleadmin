@@ -6,6 +6,9 @@ use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgUser;
 use Tinywan\Jwt\JwtToken;
 
+/**
+ * 后台公共逻辑
+ */
 class AdminLogic extends ILogic
 {
     /**
@@ -66,11 +69,7 @@ class AdminLogic extends ILogic
             }
         }
         */
-
-        //        $tmp = Redis::get("captcha:code:".$captchaId);
-        //        if (strtolower($verifyCode)!=strtolower($tmp)) {
-        //            throw new BusinessException("验证码错误",[],500);
-        //        }
+       
         $token = JwtToken::generateToken([
             'id' => $userInfo['id'],
             'user_name' => $userInfo['user_name'],
