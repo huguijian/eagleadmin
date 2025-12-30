@@ -43,10 +43,15 @@ class Install
                     mkdir($parent_dir, 0777, true);
                 }
             }
-            //symlink(__DIR__ . "/$source", base_path()."/$dest");
+
+            // if (is_link(base_path()."/$dest")) {
+            //     echo "Skip $dest";
+            //     continue;
+            // }
+            // symlink(__DIR__ . "/$source", base_path()."/$dest");
+
             copy_dir(__DIR__ . "/$source", base_path()."/$dest");
-            echo "Create $dest
-";
+            echo "Create $dest";
         }
     }
 

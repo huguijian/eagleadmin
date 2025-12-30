@@ -8,6 +8,9 @@ use plugin\eagleadmin\app\model\EgMenu;
 use support\Request;
 use support\Response;
 
+/**
+ * 菜单管理
+ */
 class MenuController extends BaseController
 {
 
