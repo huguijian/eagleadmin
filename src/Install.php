@@ -1,6 +1,9 @@
 <?php
 namespace Huguijian\Eagleadmin;
 
+/**
+ * 安装
+ */
 class Install
 {
     const WEBMAN_PLUGIN = true;

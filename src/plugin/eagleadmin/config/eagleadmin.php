@@ -5,4 +5,6 @@ return [
         '/core/admin/login',
         '/core/admin/get-captcha'
     ],
+    //登录是否需要验证码
+    'need_captcha' => true,
 ];

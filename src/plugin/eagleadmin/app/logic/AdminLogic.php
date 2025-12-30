@@ -5,6 +5,8 @@ namespace plugin\eagleadmin\app\logic;
 use plugin\eagleadmin\app\logic\ILogic;
 use plugin\eagleadmin\app\model\EgUser;
 use Tinywan\Jwt\JwtToken;
+use support\Redis;
+
 
 /**
  * 后台公共逻辑
@@ -50,9 +52,8 @@ class AdminLogic extends ILogic
             $msg  = "该用户禁止登陆!";
             return false;
         }
-
-        /*
-        if (getenv('APP_ENV')!=='local') {
+        $needCaptcha = config('plugin.eagleadmin.eagleadmin.need_captcha', true);
+        if ($needCaptcha) {
             $redisCaptcha = Redis::get("eagleadmin:captcha:code:".$captchaId);
 
             if (empty($redisCaptcha)) {
@@ -68,7 +69,6 @@ class AdminLogic extends ILogic
                 return false;
             }
         }
-        */
        
         $token = JwtToken::generateToken([
             'id' => $userInfo['id'],
