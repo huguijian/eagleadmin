@@ -31,7 +31,7 @@ class MenuLogic extends ILogic
         {
             $query->select('id', Db::raw('id as value'), Db::raw('name as label'), 'parent_id');
         }
-        $query->orderBy('sort', 'desc');
+        $query->orderBy('sort', 'asc');
         if ($onlyTrashed){
             $query->onlyTrashed();
         }
