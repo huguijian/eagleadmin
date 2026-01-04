@@ -317,9 +317,9 @@ trait Crud
                 continue;
             }
             // 非字符串类型传空则为null
-            //if ($item === '' && strpos(strtolower($columns[$col]), 'varchar') === false && strpos(strtolower($columns[$col]), 'text') === false) {
-            //    $data[$col] = null;
-            //}
+            if ($item === '' && strpos(strtolower($columns[$col]), 'varchar') === false && strpos(strtolower($columns[$col]), 'text') === false) {
+                $data[$col] = null;
+            }
         }
         if (empty($data['crete_time'])) {
             unset($data['crete_time']);
